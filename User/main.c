@@ -66,14 +66,14 @@ int main(void) {
         /*菜单操作*/
         if (MenuFlag==SETKey){
 
-
-            if (KeyNumMenu==1)//速度操作
+            /*  速度操作 */
+            if (KeyNumMenu==1)
             {
                 OLED_Clear();
                 OLED_ShowString(1,1,"Speed");//1 Speed
                 OLED_ShowNum(1,1,Speed,4);//SpeedNum
 
-                if (KeyNum == ADDKey)					//按键1按下
+                if (KeyNum == ADDKey)
                 {
                     Speed += 20;					//速度变量自增20
                     if (Speed > 100)				//速度变量超过100后
@@ -83,7 +83,7 @@ int main(void) {
                         //若出现了此现象，则应避免使用这样的操作
                     }
                 }
-                if (KeyNum == DECKey)					//按键1按下
+                if (KeyNum == DECKey)
                 {
                     Speed -= 20;					//速度变量自增20
                     if (Speed < -100)				//速度变量超过100后
@@ -101,7 +101,7 @@ int main(void) {
 
 
 
-
+            /*  Test */
             if (KeyNumMenu==2)//目前测试的进程
             {
                 OLED_Clear();
