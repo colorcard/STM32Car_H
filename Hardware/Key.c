@@ -11,6 +11,7 @@ void Key_Init(void)
 	/*开启时钟*/
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);		//开启GPIOB的时钟
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
 	
 	/*GPIO初始化*/
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -21,6 +22,9 @@ void Key_Init(void)
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
+    GPIO_Init(GPIOD, &GPIO_InitStructure);
 }
 
 /**
@@ -48,6 +52,14 @@ uint8_t Key_GetNum(void)
 		Delay_ms(20);											//延时消抖
 		KeyNum = 2;												//置键码为2
 	}
+
+    if (GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_2) == 1)			//Key3 Set
+    {
+        Delay_ms(20);											//延时消抖
+        while (GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_2) == 1);	//等待按键松手
+        Delay_ms(20);											//延时消抖
+        KeyNum = 3;												//置键码为2
+    }
 	
 	return KeyNum;			//返回键码值，如果没有按键按下，所有if都不成立，则键码为默认值0
 }
