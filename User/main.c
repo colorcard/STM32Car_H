@@ -39,7 +39,7 @@ int main(void) {
 
         if (KeyNum==ADDKey && KeyNumMenu<KeyNumMenuTotal && MenuFlag==0)   KeyNumMenu++;
         if (KeyNum==DECKey && KeyNumMenu>1 && MenuFlag==0)   KeyNumMenu--;
-        if (KeyNum==SETKey)  MenuFlag=~MenuFlag;
+        if (KeyNum==SETKey)  MenuFlag=!MenuFlag;
 
 
         /*显示菜单*/
@@ -118,7 +118,7 @@ int main(void) {
 
 
 
-    }
+    }//while函数的大括号
 
 
 
@@ -129,4 +129,4 @@ int main(void) {
 
 
 
-}
+}//main函数的大括号
