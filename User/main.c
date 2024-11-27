@@ -20,6 +20,10 @@ uint8_t KeyNumMenu=1;		//定义用于接收按键页码
 uint8_t KeyNumMenuTotal=1;		//定义用于接收按键页码的总和
 uint8_t MenuFlag=0;        //定义菜单标志,0为主菜单,1为子菜单
 
+uint8_t LastKeyNumMenu=1;		//定义用于上一次接收按键页码
+uint8_t LastMenuFlag=0;        //上一次定义菜单标志,0为主菜单,1为子菜单
+
+
 
 int8_t Speed;		//定义速度变量
 
@@ -54,6 +58,11 @@ int main(void) {
 
 
     while (1) {
+        if (LastKeyNumMenu!=KeyNumMenu||LastMenuFlag!=MenuFlag){
+            OLED_Clear();
+            LastKeyNumMenu=KeyNumMenu;
+            LastMenuFlag=MenuFlag;
+        }
 
         KeyNum = Key_GetNum();				//获取按键键码
 
@@ -67,7 +76,6 @@ int main(void) {
         {
             if (KeyNumMenu==1)
             {
-                OLED_Clear();
                 OLED_ShowString(1,1,"X Speed");//1 Speed
                 OLED_ShowString(1,3,"2 Test");//2 Menu2
 //                OLED_ShowString(1,5,"3 Menu3");//3 Menu3
@@ -75,7 +83,6 @@ int main(void) {
             }
             if (KeyNumMenu==2)
             {
-                OLED_Clear();
                 OLED_ShowString(1,1,"1 Speed");//1 Speed
                 OLED_ShowString(1,3,"X Test");//2 Menu2
 //                OLED_ShowString(1,5,"3 Menu3");//3 Menu3
@@ -89,7 +96,6 @@ int main(void) {
             /*  速度操作 */
             if (KeyNumMenu==1)
             {
-                OLED_Clear();
                 OLED_ShowString(1,1,"Speed");//1 Speed
                 OLED_ShowNum(1,1,Speed,4);//SpeedNum
 
@@ -117,6 +123,7 @@ int main(void) {
 
                 Motor_SetSpeedA(Speed);				//设置直流电机的速度为速度变量
                 Motor_SetSpeedB(Speed);
+                OLED_Clear();
             }
 
 
@@ -124,7 +131,6 @@ int main(void) {
             /*  Test */
             if (KeyNumMenu==2)//目前测试的进程
             {
-                OLED_Clear();
                 OLED_ShowString(1,1,"Test");//1 Speed
             }
 
