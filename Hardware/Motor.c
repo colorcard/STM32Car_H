@@ -1,6 +1,9 @@
 #include "stm32f10x.h"                  // Device header
 #include "PWM.h"
 
+#define LEFT 1
+#define RIGHT 2
+
 /**
   * 函    数：直流电机初始化
   * 参    数：无
@@ -65,5 +68,17 @@ void Motor_SetSpeedB(int8_t Speed)
         GPIO_ResetBits(GPIOA, GPIO_Pin_15); // PA15 置低电平
         GPIO_SetBits(GPIOA, GPIO_Pin_14);   // PA14 置高电平，设置方向为反转
         PWM_SetCompare1(-Speed);            // PWM 设置为负的速度值，因为此时速度值为负数，而 PWM 只能给正数
+    }
+}
+
+void Motor_SetSpeed(int MotorStatus,int8_t Speed)
+{
+    if (MotorStatus == LEFT)
+    {
+        Motor_SetSpeedA(Speed);
+    }
+    else if (MotorStatus == RIGHT)
+    {
+        Motor_SetSpeedB(Speed);
     }
 }

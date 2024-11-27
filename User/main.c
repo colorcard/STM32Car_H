@@ -8,6 +8,9 @@
 #define DECKey 1
 #define SETKey 3
 
+#define LEFT 1
+#define RIGHT 2
+
 uint8_t KeyNum;		//定义用于接收按键键码的变量
 uint8_t KeyNumMenu=1;		//定义用于接收按键页码
 uint8_t KeyNumMenuTotal=1;		//定义用于接收按键页码的总和
@@ -37,8 +40,8 @@ int main(void) {
 
         KeyNum = Key_GetNum();				//获取按键键码
 
-        if (KeyNum==ADDKey && KeyNumMenu<KeyNumMenuTotal && MenuFlag==0)   KeyNumMenu++;
-        if (KeyNum==DECKey && KeyNumMenu>1 && MenuFlag==0)   KeyNumMenu--;
+        if (KeyNum==ADDKey && KeyNumMenu<KeyNumMenuTotal && MenuFlag==0)   KeyNumMenu++;//菜单页码按键加
+        if (KeyNum==DECKey && KeyNumMenu>1 && MenuFlag==0)   KeyNumMenu--;//菜单页码按键减
         if (KeyNum==SETKey)  MenuFlag=!MenuFlag;
 
 
