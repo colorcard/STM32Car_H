@@ -184,7 +184,7 @@ void updateEncoderLoopSimpleVersion(Encoder* ecd, uint16_t loop_period, u8 TIMx)
     // counter_now
     ecd->counter.count_now = Read_Encoder(TIMx);
 
-    // counter_increament
+    // counter_increment
     ecd->counter.count_increment = (int64_t)((int16_t)(ecd->counter.count_now - 0));
 
     // counter_total

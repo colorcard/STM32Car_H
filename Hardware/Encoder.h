@@ -2,6 +2,11 @@
 #define __ENCODER_H
 
 #define ENCODER_TIM_PERIOD (u16)(65535)   //最大限制65535  为F103的定时器16位的
+#define LEFT_TIM TIM2
+#define RIGHT_TIM TIM4
+
+
+
 void Encoder_Init_TIM2(void);
 void Encoder_Init_TIM4(void);
 int Read_Encoder(u8 TIMX);
