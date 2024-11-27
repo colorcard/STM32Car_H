@@ -17,7 +17,7 @@
 
 uint8_t KeyNum;		//定义用于接收按键键码的变量
 uint8_t KeyNumMenu=1;		//定义用于接收按键页码
-uint8_t KeyNumMenuTotal=1;		//定义用于接收按键页码的总和
+uint8_t KeyNumMenuTotal=2;		//定义用于接收按键页码的总和
 uint8_t MenuFlag=0;        //定义菜单标志,0为主菜单,1为子菜单
 
 uint8_t LastKeyNumMenu=1;		//定义用于上一次接收按键页码
