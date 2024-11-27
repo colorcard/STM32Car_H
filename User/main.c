@@ -3,6 +3,7 @@
 #include "Delay.h"
 #include "Motor.h"
 #include "Key.h"
+#include "Encoder.h"
 
 #define ADDKey 2
 #define DECKey 1
@@ -10,6 +11,9 @@
 
 #define LEFT 1
 #define RIGHT 2
+
+#define LEFT_TIM TIM2
+#define RIGHT_TIM TIM4
 
 uint8_t KeyNum;		//定义用于接收按键键码的变量
 uint8_t KeyNumMenu=1;		//定义用于接收按键页码
@@ -19,6 +23,8 @@ uint8_t MenuFlag=0;        //定义菜单标志,0为主菜单,1为子菜单
 
 int8_t Speed;		//定义速度变量
 
+Encoder ecd_left;
+Encoder ecd_right;
 
 
 int main(void) {
@@ -26,7 +32,18 @@ int main(void) {
     OLED_Init();
 	GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE); // 禁用 JTAG/SWD 调试引脚
 	Motor_Init();
+    Encoder_Init_TIM_All();
 	Key_Init();
+
+
+    /*变量初始化*/
+    Parameter param = {4, 28, 13, 0.065};
+    initEncoder(&ecd_left, param);
+    initEncoder(&ecd_right, param);
+
+
+
+
 
     /*Menu*/
     OLED_ShowString(1,1,"1 Speed");//1 Speed
@@ -133,3 +150,14 @@ int main(void) {
 
 
 }//main函数的大括号
+
+
+void TIM1_IRQHandler(void)
+{
+    if (TIM_GetITStatus(TIM1, TIM_IT_Update) == SET)
+    {
+        updateEncoderLoopSimpleVersion(&ecd_left, 100, (u8)LEFT_TIM);
+        updateEncoderLoopSimpleVersion(&ecd_right, 100, (u8)RIGHT_TIM);
+        TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
+    }
+}//速度计时器中断服务函数

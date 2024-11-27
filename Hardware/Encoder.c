@@ -18,6 +18,13 @@ Output  : none
 入口参数：无
 返回  值：无
 **************************************************************************/
+
+void Encoder_Init_TIM_All(void)
+{
+    Encoder_Init_TIM2();
+    Encoder_Init_TIM4();
+}
+
 void Encoder_Init_TIM2(void)//Motor A
 {
     TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;

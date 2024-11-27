@@ -12,6 +12,7 @@ void Encoder_Init_TIM4(void);
 int Read_Encoder(u8 TIMX);
 void TIM4_IRQHandler(void);
 void TIM2_IRQHandler(void);
+void Encoder_Init_TIM_All(void);
 
 
 // !!!!!此文件仅适用于用STM32 PWM驱动的带有GMR(光电)or霍尔编码器的直流电机!!!!
@@ -36,12 +37,10 @@ typedef struct{
 } Position;
 
 typedef struct{
-    uint32_t count_now;			//编码器当前计数
-    uint32_t count_last;		//编码器上次计数
+    int32_t count_now;			//编码器当前计数
+    int32_t count_last;		//编码器上次计数
     int64_t  count_increment;	//编码器两帧增量计数, must int64 .+表示正转 -表示反方向转
     int64_t  count_total;		//编码器总计数
-
-
 } Counter;
 
 typedef enum{
@@ -65,7 +64,6 @@ typedef struct{
 
 void initEncoder(Encoder* ecd, const Parameter param);
 void updateEncoderLoopSimpleVersion(Encoder* ecd, uint16_t loop_period,u8 TIMx);
-void updateEncoderLoopOverflowVersion(Encoder* ecd, uint16_t loop_period,u8 TIMx);
 
 
 
