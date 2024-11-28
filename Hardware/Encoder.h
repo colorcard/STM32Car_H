@@ -37,7 +37,7 @@ typedef struct{
 } Position;
 
 typedef struct{
-    int32_t count_now;			//编码器当前计数
+    int16_t count_now;			//编码器当前计数
     int32_t count_last;		//编码器上次计数
     int64_t  count_increment;	//编码器两帧增量计数, must int64 .+表示正转 -表示反方向转
     int64_t  count_total;		//编码器总计数
@@ -63,7 +63,8 @@ typedef struct{
 
 
 void initEncoder(Encoder* ecd, const Parameter param);
-void updateEncoderLoopSimpleVersion(Encoder* ecd, uint16_t loop_period,u8 TIMx);
+void updateEncoderLoopSimpleVersion(Encoder* ecd, uint16_t loop_period,TIM_TypeDef *TIMx);
+int16_t Encoder_Get(TIM_TypeDef* TIMx);
 
 
 

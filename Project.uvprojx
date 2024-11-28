@@ -381,9 +381,9 @@
           <GroupName>Start</GroupName>
           <Files>
             <File>
-              <FileName>startup_stm32f10x_md.s</FileName>
+              <FileName>startup_stm32f10x_hd.s</FileName>
               <FileType>2</FileType>
-              <FilePath>.\Start\startup_stm32f10x_md.s</FilePath>
+              <FilePath>.\Start\startup_stm32f10x_hd.s</FilePath>
             </File>
             <File>
               <FileName>core_cm3.c</FileName>

@@ -4,7 +4,7 @@
 #include "Motor.h"
 #include "Key.h"
 #include "Encoder.h"
-#include "pid.h"
+//#include "pid.h"
 #include "Timer.h"
 
 #define ADDKey 2
@@ -14,8 +14,6 @@
 #define LEFT 1
 #define RIGHT 2
 
-#define LEFT_TIM TIM2
-#define RIGHT_TIM TIM4
 
 
 
@@ -27,38 +25,40 @@ uint8_t MenuFlag=0;        //定义菜单标志,0为主菜单,1为子菜单
 uint8_t LastKeyNumMenu=1;		//定义用于上一次接收按键页码
 uint8_t LastMenuFlag=0;        //上一次定义菜单标志,0为主菜单,1为子菜单
 
+int Temp=0;
+
 
 
 int16_t Speed;		//定义速度变量
 
 Encoder ecd_left;
 Encoder ecd_right;
-
-PID vec_left;
-PID pos_left;
-PID vec_right;
-PID pos_right;
-
+//
+//PID vec_left;
+//PID pos_left;
+//PID vec_right;
+//PID pos_right;
+//
 void myCarControlCodeInit(){
     Parameter param = {4, 28, 13, 0.065};
     initEncoder(&ecd_left,param);
     initEncoder(&ecd_right,param);
-    //vec pid init
-    initPID(&vec_left, 2100, 5000);
-    setPIDParam(&vec_left, 10, 0.5,0.0);
-
-    initPID(&vec_right, 2100, 5000);
-    setPIDParam(&vec_right, 10, 0.5,0.0);
-
-    //pos pid init
-    initPID(&pos_left, 300, 5000);// 300 -> rpm
-    setPIDParam(&pos_left, 0.9, 0.0,0.0);
-    setPIDTarget(&pos_left, 720);
-
-    initPID(&pos_right, 300, 5000);
-    setPIDParam(&pos_right, 0.9, 0.0,0.0);
-    setPIDTarget(&pos_right, 720);
-    //runMotorPWMValFB(LEFT,+1000);
+//    //vec pid init
+//    initPID(&vec_left, 2100, 5000);
+//    setPIDParam(&vec_left, 10, 0.5,0.0);
+//
+//    initPID(&vec_right, 2100, 5000);
+//    setPIDParam(&vec_right, 10, 0.5,0.0);
+//
+//    //pos pid init
+//    initPID(&pos_left, 300, 5000);// 300 -> rpm
+//    setPIDParam(&pos_left, 0.9, 0.0,0.0);
+//    setPIDTarget(&pos_left, 720);
+//
+//    initPID(&pos_right, 300, 5000);
+//    setPIDParam(&pos_right, 0.9, 0.0,0.0);
+//    setPIDTarget(&pos_right, 720);
+//    //runMotorPWMValFB(LEFT,+1000);
 }
 
 
@@ -90,12 +90,15 @@ int main(void) {
 
 
 
+
     while (1) {
         if (LastKeyNumMenu!=KeyNumMenu||LastMenuFlag!=MenuFlag){
             OLED_Clear();
             LastKeyNumMenu=KeyNumMenu;
             LastMenuFlag=MenuFlag;
         }
+		
+
 
         KeyNum = Key_GetNum();				//获取按键键码
 
@@ -110,27 +113,29 @@ int main(void) {
             if (KeyNumMenu==1)
             {
                 OLED_ShowString(1,1,"X Speed");//1 Speed
-                OLED_ShowString(1,3,"2 Test");//2 Menu2
+                OLED_ShowString(2,1,"2 Test");//2 Menu2
 //                OLED_ShowString(1,5,"3 Menu3");//3 Menu3
 //                OLED_ShowString(1,7,"4 Menu4");//4 Menu4
             }
             if (KeyNumMenu==2)
             {
                 OLED_ShowString(1,1,"1 Speed");//1 Speed
-                OLED_ShowString(1,3,"X Test");//2 Menu2
+                OLED_ShowString(2,1,"X Test");//2 Menu2
 //                OLED_ShowString(1,5,"3 Menu3");//3 Menu3
 //                OLED_ShowString(1,7,"4 Menu4");//4 Menu4
             }
         }
 
         /*菜单操作*/
-        if (MenuFlag==SETKey){
+        if (MenuFlag==1){
 
             /*  速度操作 */
             if (KeyNumMenu==1)
             {
                 OLED_ShowString(1,1,"Speed");//1 Speed
-                OLED_ShowNum(1,1,Speed,4);//SpeedNum
+                OLED_ShowSignedNum(2,1,Speed,5);//SpeedNum
+                OLED_ShowSignedNum(3,1,(int32_t)ecd_left.counter.count_total,8);//
+                OLED_ShowNum(4,1,Temp,8);//
 
                 if (KeyNum == ADDKey)
                 {
@@ -156,7 +161,6 @@ int main(void) {
 
                 Motor_SetSpeedA(Speed);				//设置直流电机的速度为速度变量
                 Motor_SetSpeedB(Speed);
-                OLED_Clear();
             }
 
 
@@ -192,12 +196,13 @@ int main(void) {
 
 
 
-void TIM1_IRQHandler(void)
+void TIM5_IRQHandler(void)
 {
-    if (TIM_GetITStatus(TIM1, TIM_IT_Update) == SET)
+    if (TIM_GetITStatus(TIM5, TIM_IT_Update) == SET)
     {
-        updateEncoderLoopSimpleVersion(&ecd_left, 100, (u8)LEFT_TIM);
-        updateEncoderLoopSimpleVersion(&ecd_right, 100, (u8)RIGHT_TIM);
+        Temp = TIM_GetCounter(TIM2);
+        updateEncoderLoopSimpleVersion(&ecd_left, 100, TIM2);
+        updateEncoderLoopSimpleVersion(&ecd_right, 100, TIM4);
 
 //        updatePID(&pos_left, ecd_left.position.angle);
 //        setPIDTarget(&vec_left, pos_left.output);
@@ -210,6 +215,6 @@ void TIM1_IRQHandler(void)
 //        Motor_SetSpeedA(vec_left.output);
 //        Motor_SetSpeedB(vec_right.output);
 
-        TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
+        TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
     }
 }//速度计时器中断服务函数

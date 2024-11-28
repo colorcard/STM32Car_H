@@ -37,7 +37,7 @@ uint8_t Key_GetNum(void)
 {
 	uint8_t KeyNum = 0;		//定义变量，默认键码值为0
 	
-	if (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_5) == 0)			//Key2 --
+	if (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_5) == 0)			//Key2 ++
 	{
 		Delay_ms(20);											//延时消抖
 		while (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_5) == 0);	//等待按键松手
@@ -45,7 +45,7 @@ uint8_t Key_GetNum(void)
 		KeyNum = 1;												//置键码为1
 	}
 	
-	if (GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_1) == 1)			//Key3 ++
+	if (GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_1) == 1)			//Key3 --
 	{
 		Delay_ms(20);											//延时消抖
 		while (GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_1) == 1);	//等待按键松手
