@@ -199,16 +199,16 @@ void TIM1_IRQHandler(void)
         updateEncoderLoopSimpleVersion(&ecd_left, 100, (u8)LEFT_TIM);
         updateEncoderLoopSimpleVersion(&ecd_right, 100, (u8)RIGHT_TIM);
 
-        updatePID(&pos_left, ecd_left.position.angle);
-        setPIDTarget(&vec_left, pos_left.output);
-        updatePID(&vec_left, ecd_left.velocity.angular);
-
-        updatePID(&pos_right, ecd_right.position.angle);
-        setPIDTarget(&vec_right, pos_right.output);
-        updatePID(&vec_right, ecd_right.velocity.angular);
-
-        Motor_SetSpeedA(vec_left.output);
-        Motor_SetSpeedB(vec_right.output);
+//        updatePID(&pos_left, ecd_left.position.angle);
+//        setPIDTarget(&vec_left, pos_left.output);
+//        updatePID(&vec_left, ecd_left.velocity.angular);
+//
+//        updatePID(&pos_right, ecd_right.position.angle);
+//        setPIDTarget(&vec_right, pos_right.output);
+//        updatePID(&vec_right, ecd_right.velocity.angular);
+//
+//        Motor_SetSpeedA(vec_left.output);
+//        Motor_SetSpeedB(vec_right.output);
 
         TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
     }

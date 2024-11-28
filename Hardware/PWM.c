@@ -31,7 +31,7 @@ void PWM_Init(void)
     TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
     TIM_TimeBaseInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;     // 不分频
     TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up; // 向上计数
-    TIM_TimeBaseInitStructure.TIM_Period = 100 - 1;                 // ARR 值
+    TIM_TimeBaseInitStructure.TIM_Period = 4096 - 1;                 // ARR 值
     TIM_TimeBaseInitStructure.TIM_Prescaler = 36 - 1;               // 预分频器
     TIM_TimeBaseInitStructure.TIM_RepetitionCounter = 0;            // 高级定时器使用
     TIM_TimeBaseInit(TIM3, &TIM_TimeBaseInitStructure);             // 初始化 TIM3

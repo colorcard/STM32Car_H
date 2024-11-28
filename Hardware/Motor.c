@@ -31,7 +31,7 @@ void Motor_Init(void)
 
 /**
   * 函    数：直流电机 A 设置速度
-  * 参    数：Speed 要设置的速度，范围：-100~100
+  * 参    数：Speed 要设置的速度，范围：-4096~4096
   * 返 回 值：无
   */
 void Motor_SetSpeedA(int8_t Speed)
