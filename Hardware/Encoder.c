@@ -25,35 +25,46 @@ void Encoder_Init_TIM_All(void)
     Encoder_Init_TIM4();
 }
 
-void Encoder_Init_TIM2(void)//Motor A
+void Encoder_Init_TIM5(void) // Motor A
 {
     TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
     TIM_ICInitTypeDef TIM_ICInitStructure;
     GPIO_InitTypeDef GPIO_InitStructure;
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);//使能定时器4的时钟
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);//使能PB端口时钟
 
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1;	//端口配置
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU; //浮空输入
-    GPIO_Init(GPIOA, &GPIO_InitStructure);					      //根据设定参数初始化GPIOB
+    /* 时钟使能 */
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE);       // 使能 TIM5 时钟
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);      // 使能 GPIOA 时钟
 
+    /* GPIO 配置 */
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1;     // 配置 PA0 和 PA1 为 TIM5 的通道 1 和通道 2
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;             // 设置为上拉输入
+    GPIO_Init(GPIOA, &GPIO_InitStructure);                    // 初始化 GPIOA
+
+    /* TIM 基础配置 */
     TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
-    TIM_TimeBaseStructure.TIM_Prescaler = 0x0; // 预分频器
-    TIM_TimeBaseStructure.TIM_Period = 65536 - 1; //设定计数器自动重装值
-    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;//选择时钟分频：不分频
-    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;////TIM向上计数
-    TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
+    TIM_TimeBaseStructure.TIM_Prescaler = 1 - 1;              // 预分频器，时钟不分频
+    TIM_TimeBaseStructure.TIM_Period = 65536 - 1;             // 自动重装值，最大计数值
+    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;   // 不分频
+    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up; // 向上计数模式
+    TIM_TimeBaseInit(TIM5, &TIM_TimeBaseStructure);           // 初始化 TIM5 的基础设置
 
+    /* 编码器接口配置 */
+    TIM_EncoderInterfaceConfig(TIM5, TIM_EncoderMode_TI12,
+                               TIM_ICPolarity_Rising,
+                               TIM_ICPolarity_Rising);       // 编码器模式 3，双通道上升沿捕获
 
-    TIM_EncoderInterfaceConfig(TIM2, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);//使用编码器模式3
+    /* 输入捕获配置 */
     TIM_ICStructInit(&TIM_ICInitStructure);
-    TIM_ICInitStructure.TIM_ICFilter = 0xF;	//滤波10
-    TIM_ICInit(TIM2, &TIM_ICInitStructure);
-    TIM_ClearFlag(TIM2, TIM_FLAG_Update);//清除TIM的更新标志位
-    TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
-    //Reset counter
-    TIM_SetCounter(TIM2,0);
-    TIM_Cmd(TIM2, ENABLE);
+    TIM_ICInitStructure.TIM_ICFilter = 0xF;                   // 滤波器设置为最大值（15）
+    TIM_ICInit(TIM5, &TIM_ICInitStructure);
+
+    /* 中断配置 */
+    TIM_ClearFlag(TIM5, TIM_FLAG_Update);                     // 清除更新标志位
+    TIM_ITConfig(TIM5, TIM_IT_Update, ENABLE);                // 开启更新中断
+
+    /* 计数器复位并使能 */
+    TIM_SetCounter(TIM5, 0);                                  // 复位计数器
+    TIM_Cmd(TIM5, ENABLE);                                    // 使能 TIM5
 }
 
 
@@ -135,12 +146,12 @@ Output  : none
 入口参数：无
 返回  值：无
 **************************************************************************/
-void TIM2_IRQHandler(void)
+void TIM5_IRQHandler(void)
 {
-    if (TIM2->SR & TIM_SR_UIF) // 检测更新中断标志
+    if (TIM5->SR & TIM_SR_UIF) // 检测更新中断标志
     {
         overflow_count_TIM2++;     // 增加溢出次数
-        TIM2->SR &= ~TIM_SR_UIF;   // 清除中断标志位
+        TIM5->SR &= ~TIM_SR_UIF;   // 清除中断标志位
     }
 }
 
