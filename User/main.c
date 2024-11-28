@@ -4,6 +4,8 @@
 #include "Motor.h"
 #include "Key.h"
 #include "Encoder.h"
+#include "pid.h"
+#include "Timer.h"
 
 #define ADDKey 2
 #define DECKey 1
@@ -14,6 +16,8 @@
 
 #define LEFT_TIM TIM2
 #define RIGHT_TIM TIM4
+
+
 
 uint8_t KeyNum;		//定义用于接收按键键码的变量
 uint8_t KeyNumMenu=1;		//定义用于接收按键页码
@@ -30,6 +34,36 @@ int8_t Speed;		//定义速度变量
 Encoder ecd_left;
 Encoder ecd_right;
 
+PID vec_left;
+PID pos_left;
+PID vec_right;
+PID pos_right;
+
+void myCarControlCodeInit(){
+    Parameter param = {4, 28, 13, 0.065};
+    initEncoder(&ecd_left,param);
+    initEncoder(&ecd_right,param);
+    //vec pid init
+    initPID(&vec_left, 2100, 5000);
+    setPIDParam(&vec_left, 10, 0.5,0.0);
+
+    initPID(&vec_right, 2100, 5000);
+    setPIDParam(&vec_right, 10, 0.5,0.0);
+
+    //pos pid init
+    initPID(&pos_left, 300, 5000);// 300 -> rpm
+    setPIDParam(&pos_left, 0.9, 0.0,0.0);
+    setPIDTarget(&pos_left, 720);
+
+    initPID(&pos_right, 300, 5000);
+    setPIDParam(&pos_right, 0.9, 0.0,0.0);
+    setPIDTarget(&pos_right, 720);
+    //runMotorPWMValFB(LEFT,+1000);
+}
+
+
+
+
 
 int main(void) {
     /*模块初始化*/
@@ -37,13 +71,12 @@ int main(void) {
 	GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE); // 禁用 JTAG/SWD 调试引脚
 	Motor_Init();
     Encoder_Init_TIM_All();
+    Timer_Init();
 	Key_Init();
 
 
     /*变量初始化*/
-    Parameter param = {4, 28, 13, 0.065};
-    initEncoder(&ecd_left, param);
-    initEncoder(&ecd_right, param);
+    myCarControlCodeInit();
 
 
 
@@ -158,12 +191,25 @@ int main(void) {
 }//main函数的大括号
 
 
+
 void TIM1_IRQHandler(void)
 {
     if (TIM_GetITStatus(TIM1, TIM_IT_Update) == SET)
     {
         updateEncoderLoopSimpleVersion(&ecd_left, 100, (u8)LEFT_TIM);
         updateEncoderLoopSimpleVersion(&ecd_right, 100, (u8)RIGHT_TIM);
+
+        updatePID(&pos_left, ecd_left.position.angle);
+        setPIDTarget(&vec_left, pos_left.output);
+        updatePID(&vec_left, ecd_left.velocity.angular);
+
+        updatePID(&pos_right, ecd_right.position.angle);
+        setPIDTarget(&vec_right, pos_right.output);
+        updatePID(&vec_right, ecd_right.velocity.angular);
+
+        Motor_SetSpeedA(vec_left.output);
+        Motor_SetSpeedB(vec_right.output);
+
         TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
     }
 }//速度计时器中断服务函数

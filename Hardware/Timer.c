@@ -1,6 +1,9 @@
 #include "stm32f10x.h"                  // Device header
 #include "Timer.h"
 #include "Encoder.h"
+#include "pid.h"
+
+
 
 void Timer_Init(void)
 {
