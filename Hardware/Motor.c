@@ -34,7 +34,7 @@ void Motor_Init(void)
   * 参    数：Speed 要设置的速度，范围：-4096~4096
   * 返 回 值：无
   */
-void Motor_SetSpeedA(int8_t Speed)
+void Motor_SetSpeedA(int16_t Speed)
 {
     if (Speed >= 0)                         // 如果设置正转的速度值
     {
@@ -55,7 +55,7 @@ void Motor_SetSpeedA(int8_t Speed)
   * 参    数：Speed 要设置的速度，范围：-100~100
   * 返 回 值：无
   */
-void Motor_SetSpeedB(int8_t Speed)
+void Motor_SetSpeedB(int16_t Speed)
 {
     if (Speed >= 0)                         // 如果设置正转的速度值
     {
@@ -71,7 +71,7 @@ void Motor_SetSpeedB(int8_t Speed)
     }
 }
 
-void Motor_SetSpeed(int MotorStatus,int8_t Speed)
+void Motor_SetSpeed(int MotorStatus,int16_t Speed)
 {
     if (MotorStatus == LEFT)
     {

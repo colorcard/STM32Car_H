@@ -29,7 +29,7 @@ uint8_t LastMenuFlag=0;        //上一次定义菜单标志,0为主菜单,1为�
 
 
 
-int8_t Speed;		//定义速度变量
+int16_t Speed;		//定义速度变量
 
 Encoder ecd_left;
 Encoder ecd_right;
@@ -71,7 +71,7 @@ int main(void) {
 	GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE); // 禁用 JTAG/SWD 调试引脚
 	Motor_Init();
     Encoder_Init_TIM_All();
-    Timer_Init();
+    Timer_Init();//定时器初始化
 	Key_Init();
 
 
@@ -134,8 +134,8 @@ int main(void) {
 
                 if (KeyNum == ADDKey)
                 {
-                    Speed += 20;					//速度变量自增20
-                    if (Speed > 100)				//速度变量超过100后
+                    Speed += 200;					//速度变量自增20
+                    if (Speed > 4000)				//速度变量超过100后
                     {
                         Speed = -100;				//速度变量变为-100
                         //此操作会让电机旋转方向突然改变，可能会因供电不足而导致单片机复位
@@ -144,8 +144,8 @@ int main(void) {
                 }
                 if (KeyNum == DECKey)
                 {
-                    Speed -= 20;					//速度变量自增20
-                    if (Speed < -100)				//速度变量超过100后
+                    Speed -= 200;					//速度变量自增20
+                    if (Speed < -4000)				//速度变量超过100后
                     {
                         Speed = 100;				//速度变量变为-100
                         //此操作会让电机旋转方向突然改变，可能会因供电不足而导致单片机复位
