@@ -196,9 +196,9 @@ int main(void) {
 
 
 
-void TIM5_IRQHandler(void)
+void TIM1_UP_IRQHandler(void)
 {
-    if (TIM_GetITStatus(TIM5, TIM_IT_Update) == SET)
+    if (TIM_GetITStatus(TIM1, TIM_IT_Update) == SET)
     {
         Temp = TIM_GetCounter(TIM2);
         updateEncoderLoopSimpleVersion(&ecd_left, 100, TIM2);
@@ -215,6 +215,6 @@ void TIM5_IRQHandler(void)
 //        Motor_SetSpeedA(vec_left.output);
 //        Motor_SetSpeedB(vec_right.output);
 
-        TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
+        TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
     }
 }//速度计时器中断服务函数
