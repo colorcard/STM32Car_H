@@ -16,8 +16,9 @@ include_directories(
         ./Hardware
 )
 
-add_definitions(-DSTM32F10X_MD)
-add_definitions(-DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD)
+add_definitions(-DSTM32F10X_HD)
+add_definitions(-DUSE_STDPERIPH_DRIVER)
+
 
 file(GLOB HARDWARE_SRC "Hardware/*.c" "Hardware/*.h")
 file(GLOB LIBRARY_SRC "Library/*.c" "Library/*.h")
