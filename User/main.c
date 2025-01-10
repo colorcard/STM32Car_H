@@ -1,10 +1,10 @@
 #include "stm32f10x.h"  // Device header
 #include "OLED.h"
-#include "Delay.h"
+//#include "Delay.h"
 #include "Motor.h"
 #include "Key.h"
 #include "Encoder.h"
-//#include "pid.h"
+#include "pid.h"
 #include "Timer.h"
 
 #define ADDKey 2
@@ -33,32 +33,32 @@ int16_t Speed;		//定义速度变量
 
 Encoder ecd_left;
 Encoder ecd_right;
-//
-//PID vec_left;
-//PID pos_left;
-//PID vec_right;
-//PID pos_right;
-//
+
+PID vec_left;
+PID pos_left;
+PID vec_right;
+PID pos_right;
+
 void myCarControlCodeInit(){
     Parameter param = {4, 28, 13, 0.065};
     initEncoder(&ecd_left,param);
     initEncoder(&ecd_right,param);
-//    //vec pid init
-//    initPID(&vec_left, 2100, 5000);
-//    setPIDParam(&vec_left, 10, 0.5,0.0);
-//
-//    initPID(&vec_right, 2100, 5000);
-//    setPIDParam(&vec_right, 10, 0.5,0.0);
-//
-//    //pos pid init
-//    initPID(&pos_left, 300, 5000);// 300 -> rpm
-//    setPIDParam(&pos_left, 0.9, 0.0,0.0);
-//    setPIDTarget(&pos_left, 720);
-//
-//    initPID(&pos_right, 300, 5000);
-//    setPIDParam(&pos_right, 0.9, 0.0,0.0);
-//    setPIDTarget(&pos_right, 720);
-//    //runMotorPWMValFB(LEFT,+1000);
+    //vec pid init
+    initPID(&vec_left, 2100, 5000);
+    setPIDParam(&vec_left, 10, 0.5,0.0);
+
+    initPID(&vec_right, 2100, 5000);
+    setPIDParam(&vec_right, 10, 0.5,0.0);
+
+    //pos pid init
+    initPID(&pos_left, 300, 5000);// 300 -> rpm
+    setPIDParam(&pos_left, 0.9, 0.0,0.0);
+    setPIDTarget(&pos_left, 0);
+
+    initPID(&pos_right, 300, 5000);
+    setPIDParam(&pos_right, 0.9, 0.0,0.0);
+    setPIDTarget(&pos_right, 0);
+
 }
 
 
@@ -134,8 +134,9 @@ int main(void) {
             {
                 OLED_ShowString(1,1,"Speed");//1 Speed
                 OLED_ShowSignedNum(2,1,Speed,5);//SpeedNum
-                OLED_ShowSignedNum(3,1,(int32_t)ecd_left.counter.count_total,8);//
-                OLED_ShowNum(4,1,Temp,8);//
+                OLED_ShowSignedNum(3,1,(int32_t)ecd_left.counter.count_increment,8);//
+                OLED_ShowSignedNum(4,1,(int32_t)ecd_right.counter.count_increment,8);//
+//                OLED_ShowNum(4,1,Temp,8);//
 
                 if (KeyNum == ADDKey)
                 {
@@ -159,8 +160,8 @@ int main(void) {
                 }
 
 
-                Motor_SetSpeedA(Speed);				//设置直流电机的速度为速度变量
-                Motor_SetSpeedB(Speed);
+//                Motor_SetSpeedA(Speed);				//设置直流电机的速度为速度变量
+//                Motor_SetSpeedB(Speed);
             }
 
 
@@ -211,9 +212,13 @@ void TIM1_UP_IRQHandler(void)
 //        updatePID(&pos_right, ecd_right.position.angle);
 //        setPIDTarget(&vec_right, pos_right.output);
 //        updatePID(&vec_right, ecd_right.velocity.angular);
-//
-//        Motor_SetSpeedA(vec_left.output);
-//        Motor_SetSpeedB(vec_right.output);
+
+        updatePID(&vec_left, ecd_left.counter.count_increment);
+        updatePID(&vec_right, ecd_right.counter.count_increment);
+
+
+        Motor_SetSpeedA(vec_left.output);
+        Motor_SetSpeedB(vec_right.output);
 
         TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
     }

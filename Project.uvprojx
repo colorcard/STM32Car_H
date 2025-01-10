@@ -740,6 +740,16 @@
               <FileType>5</FileType>
               <FilePath>.\Hardware\Timer.h</FilePath>
             </File>
+            <File>
+              <FileName>pid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\pid.c</FilePath>
+            </File>
+            <File>
+              <FileName>pid.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\pid.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
