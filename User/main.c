@@ -6,6 +6,7 @@
 #include "Encoder.h"
 #include "pid.h"
 #include "Timer.h"
+#include "Serial.h"
 
 #define ADDKey 2
 #define DECKey 1
@@ -45,10 +46,12 @@ void myCarControlCodeInit(){
     initEncoder(&ecd_right,param);
     //vec pid init
     initPID(&vec_left, 2100, 5000);
-    setPIDParam(&vec_left, 10, 0.5,0.0);
+    setPIDParam(&vec_left, 11, 0.5,0.5);
+    //setPIDTarget(&vec_left, 100);
 
     initPID(&vec_right, 2100, 5000);
-    setPIDParam(&vec_right, 10, 0.5,0.0);
+    setPIDParam(&vec_right, 11, 0.5,0.5);
+    //setPIDTarget(&vec_right, 100);
 
     //pos pid init
     initPID(&pos_left, 300, 5000);// 300 -> rpm
@@ -73,6 +76,7 @@ int main(void) {
     Encoder_Init_TIM_All();
     Timer_Init();//定时器初始化
 	Key_Init();
+    Serial_Init();
 
 
     /*变量初始化*/
@@ -132,11 +136,16 @@ int main(void) {
             /*  速度操作 */
             if (KeyNumMenu==1)
             {
+				setPIDTarget(&vec_left, 100);
+				setPIDTarget(&vec_right, 100);
+
                 OLED_ShowString(1,1,"Speed");//1 Speed
                 OLED_ShowSignedNum(2,1,Speed,5);//SpeedNum
                 OLED_ShowSignedNum(3,1,(int32_t)ecd_left.counter.count_increment,8);//
                 OLED_ShowSignedNum(4,1,(int32_t)ecd_right.counter.count_increment,8);//
 //                OLED_ShowNum(4,1,Temp,8);//
+
+                Serial_Printf("Speed:1,1\n",ecd_left.counter.count_increment,ecd_right.counter.count_increment);
 
                 if (KeyNum == ADDKey)
                 {
@@ -178,8 +187,11 @@ int main(void) {
 
 
 
-	}
+	    }
+		
 
+
+        
 
 
     }//while函数的大括号
@@ -219,6 +231,9 @@ void TIM1_UP_IRQHandler(void)
 
         Motor_SetSpeedA(vec_left.output);
         Motor_SetSpeedB(vec_right.output);
+		
+
+
 
         TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
     }
