@@ -145,8 +145,8 @@ int main(void) {
                 OLED_ShowSignedNum(4,1,(int32_t)ecd_right.counter.count_increment,8);//
 //                OLED_ShowNum(4,1,Temp,8);//
 
-                Serial_Printf("Speed:1,1\n",ecd_left.counter.count_increment,ecd_right.counter.count_increment);
-
+                Serial_Printf("Speed:%lld,",ecd_left.counter.count_increment);
+				Serial_Printf("%lld\n",ecd_right.counter.count_increment);
                 if (KeyNum == ADDKey)
                 {
                     Speed += 200;					//速度变量自增20

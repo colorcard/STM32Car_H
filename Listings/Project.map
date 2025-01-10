@@ -1043,13 +1043,13 @@ Image Symbol Table
     i.initPID                                0x08002a98   Section        0  pid.o(i.initPID)
     i.limit                                  0x08002ab6   Section        0  pid.o(i.limit)
     i.main                                   0x08002aec   Section        0  main.o(i.main)
-    i.myCarControlCodeInit                   0x08002d2c   Section        0  main.o(i.myCarControlCodeInit)
-    i.setPIDParam                            0x08002df8   Section        0  pid.o(i.setPIDParam)
-    i.setPIDTarget                           0x08002e00   Section        0  pid.o(i.setPIDTarget)
-    i.updateEncoderLoopSimpleVersion         0x08002e04   Section        0  encoder.o(i.updateEncoderLoopSimpleVersion)
-    i.updatePID                              0x08002fb8   Section        0  pid.o(i.updatePID)
-    .constdata                               0x08003028   Section     1520  oled.o(.constdata)
-    .constdata                               0x08003618   Section       16  main.o(.constdata)
+    i.myCarControlCodeInit                   0x08002d34   Section        0  main.o(i.myCarControlCodeInit)
+    i.setPIDParam                            0x08002e00   Section        0  pid.o(i.setPIDParam)
+    i.setPIDTarget                           0x08002e08   Section        0  pid.o(i.setPIDTarget)
+    i.updateEncoderLoopSimpleVersion         0x08002e0c   Section        0  encoder.o(i.updateEncoderLoopSimpleVersion)
+    i.updatePID                              0x08002fc0   Section        0  pid.o(i.updatePID)
+    .constdata                               0x08003030   Section     1520  oled.o(.constdata)
+    .constdata                               0x08003620   Section       16  main.o(.constdata)
     .data                                    0x20000000   Section       20  stm32f10x_rcc.o(.data)
     APBAHBPrescTable                         0x20000000   Data          16  stm32f10x_rcc.o(.data)
     ADCPrescTable                            0x20000010   Data           4  stm32f10x_rcc.o(.data)
@@ -1223,7 +1223,7 @@ Image Symbol Table
     RCC_APB2PeriphClockCmd                   0x080013f9   Thumb Code    26  stm32f10x_rcc.o(i.RCC_APB2PeriphClockCmd)
     RCC_GetClocksFreq                        0x08001419   Thumb Code   192  stm32f10x_rcc.o(i.RCC_GetClocksFreq)
     SVC_Handler                              0x080014ed   Thumb Code     2  stm32f10x_it.o(i.SVC_Handler)
-    Serial_Init                              0x080014f1   Thumb Code   170  serial.o(i.Serial_Init)
+    Serial_Init                              0x080014f1   Thumb Code   172  serial.o(i.Serial_Init)
     Serial_Printf                            0x080015a5   Thumb Code    36  serial.o(i.Serial_Printf)
     Serial_SendByte                          0x080015c9   Thumb Code    28  serial.o(i.Serial_SendByte)
     Serial_SendString                        0x080015e9   Thumb Code    26  serial.o(i.Serial_SendString)
@@ -1276,15 +1276,15 @@ Image Symbol Table
     initEncoder                              0x08002a61   Thumb Code    56  encoder.o(i.initEncoder)
     initPID                                  0x08002a99   Thumb Code    30  pid.o(i.initPID)
     limit                                    0x08002ab7   Thumb Code    52  pid.o(i.limit)
-    main                                     0x08002aed   Thumb Code   462  main.o(i.main)
-    myCarControlCodeInit                     0x08002d2d   Thumb Code   156  main.o(i.myCarControlCodeInit)
-    setPIDParam                              0x08002df9   Thumb Code     8  pid.o(i.setPIDParam)
-    setPIDTarget                             0x08002e01   Thumb Code     4  pid.o(i.setPIDTarget)
-    updateEncoderLoopSimpleVersion           0x08002e05   Thumb Code   414  encoder.o(i.updateEncoderLoopSimpleVersion)
-    updatePID                                0x08002fb9   Thumb Code   112  pid.o(i.updatePID)
-    OLED_F8x16                               0x08003028   Data        1520  oled.o(.constdata)
-    Region$$Table$$Base                      0x08003628   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x08003648   Number         0  anon$$obj.o(Region$$Table)
+    main                                     0x08002aed   Thumb Code   464  main.o(i.main)
+    myCarControlCodeInit                     0x08002d35   Thumb Code   156  main.o(i.myCarControlCodeInit)
+    setPIDParam                              0x08002e01   Thumb Code     8  pid.o(i.setPIDParam)
+    setPIDTarget                             0x08002e09   Thumb Code     4  pid.o(i.setPIDTarget)
+    updateEncoderLoopSimpleVersion           0x08002e0d   Thumb Code   414  encoder.o(i.updateEncoderLoopSimpleVersion)
+    updatePID                                0x08002fc1   Thumb Code   112  pid.o(i.updatePID)
+    OLED_F8x16                               0x08003030   Data        1520  oled.o(.constdata)
+    Region$$Table$$Base                      0x08003630   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x08003650   Number         0  anon$$obj.o(Region$$Table)
     overflow_count_TIM2                      0x20000014   Data           4  encoder.o(.data)
     overflow_count_TIM4                      0x20000018   Data           4  encoder.o(.data)
     Serial_RxFlag                            0x2000001c   Data           1  serial.o(.data)
@@ -1313,9 +1313,9 @@ Memory Map of the image
 
   Image Entry point : 0x08000131
 
-  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00003678, Max: 0x00040000, ABSOLUTE)
+  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00003680, Max: 0x00040000, ABSOLUTE)
 
-    Execution Region ER_IROM1 (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x00003648, Max: 0x00040000, ABSOLUTE)
+    Execution Region ER_IROM1 (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x00003650, Max: 0x00040000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -1476,29 +1476,29 @@ Memory Map of the image
     0x08002a98   0x08002a98   0x0000001e   Code   RO         3523    i.initPID           pid.o
     0x08002ab6   0x08002ab6   0x00000034   Code   RO         3524    i.limit             pid.o
     0x08002aea   0x08002aea   0x00000002   PAD
-    0x08002aec   0x08002aec   0x00000240   Code   RO         3631    i.main              main.o
-    0x08002d2c   0x08002d2c   0x000000cc   Code   RO         3632    i.myCarControlCodeInit  main.o
-    0x08002df8   0x08002df8   0x00000008   Code   RO         3525    i.setPIDParam       pid.o
-    0x08002e00   0x08002e00   0x00000004   Code   RO         3526    i.setPIDTarget      pid.o
-    0x08002e04   0x08002e04   0x000001b4   Code   RO         3444    i.updateEncoderLoopSimpleVersion  encoder.o
-    0x08002fb8   0x08002fb8   0x00000070   Code   RO         3527    i.updatePID         pid.o
-    0x08003028   0x08003028   0x000005f0   Data   RO         3236    .constdata          oled.o
-    0x08003618   0x08003618   0x00000010   Data   RO         3634    .constdata          main.o
-    0x08003628   0x08003628   0x00000020   Data   RO         3843    Region$$Table       anon$$obj.o
+    0x08002aec   0x08002aec   0x00000248   Code   RO         3631    i.main              main.o
+    0x08002d34   0x08002d34   0x000000cc   Code   RO         3632    i.myCarControlCodeInit  main.o
+    0x08002e00   0x08002e00   0x00000008   Code   RO         3525    i.setPIDParam       pid.o
+    0x08002e08   0x08002e08   0x00000004   Code   RO         3526    i.setPIDTarget      pid.o
+    0x08002e0c   0x08002e0c   0x000001b4   Code   RO         3444    i.updateEncoderLoopSimpleVersion  encoder.o
+    0x08002fc0   0x08002fc0   0x00000070   Code   RO         3527    i.updatePID         pid.o
+    0x08003030   0x08003030   0x000005f0   Data   RO         3236    .constdata          oled.o
+    0x08003620   0x08003620   0x00000010   Data   RO         3634    .constdata          main.o
+    0x08003630   0x08003630   0x00000020   Data   RO         3843    Region$$Table       anon$$obj.o
 
 
-    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x08003648, Size: 0x000005e8, Max: 0x0000c000, ABSOLUTE)
+    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x08003650, Size: 0x000005e8, Max: 0x0000c000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x20000000   0x08003648   0x00000014   Data   RW         1805    .data               stm32f10x_rcc.o
-    0x20000014   0x0800365c   0x00000008   Data   RW         3445    .data               encoder.o
-    0x2000001c   0x08003664   0x00000003   Data   RW         3569    .data               serial.o
-    0x2000001f   0x08003667   0x00000001   PAD
-    0x20000020   0x08003668   0x0000000e   Data   RW         3635    .data               main.o
-    0x2000002e   0x08003676   0x00000002   PAD
+    0x20000000   0x08003650   0x00000014   Data   RW         1805    .data               stm32f10x_rcc.o
+    0x20000014   0x08003664   0x00000008   Data   RW         3445    .data               encoder.o
+    0x2000001c   0x0800366c   0x00000003   Data   RW         3569    .data               serial.o
+    0x2000001f   0x0800366f   0x00000001   PAD
+    0x20000020   0x08003670   0x0000000e   Data   RW         3635    .data               main.o
+    0x2000002e   0x0800367e   0x00000002   PAD
     0x20000030        -       0x00000064   Zero   RW         3568    .bss                serial.o
-    0x20000094   0x08003676   0x00000004   PAD
+    0x20000094   0x0800367e   0x00000004   PAD
     0x20000098        -       0x00000150   Zero   RW         3633    .bss                main.o
     0x200001e8        -       0x00000400   Zero   RW            1    STACK               startup_stm32f10x_hd.o
 
@@ -1514,13 +1514,13 @@ Image component sizes
         70          0          0          0          0        882   delay.o
        932         48          0          8          0       5598   encoder.o
        248         28          0          0          0        992   key.o
-       940        190         16         14        336       3516   main.o
+       948        196         16         14        336       3504   main.o
        132         22          0          0          0     206031   misc.o
        208         16          0          0          0       1449   motor.o
        872         38       1520          0          0       7271   oled.o
        206          0          0          0          0       2843   pid.o
        212         22          0          0          0       1531   pwm.o
-       434         34          0          3        100       3924   serial.o
+       434         32          0          3        100       3924   serial.o
         36          8        304          0       1024        792   startup_stm32f10x_hd.o
          0          0          0          0          0       1636   stm32f10x_adc.o
        458          6          0          0          0      12950   stm32f10x_gpio.o
@@ -1532,7 +1532,7 @@ Image component sizes
        128          6          0          0          0        965   timer.o
 
     ----------------------------------------------------------------------
-      7562        664       1872         48       1464     363779   Object Totals
+      7570        668       1872         48       1464     363767   Object Totals
          0          0         32          0          0          0   (incl. Generated)
         28          0          0          3          4          0   (incl. Padding)
 
@@ -1597,15 +1597,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     12024        766       1872         48       1464     360075   Grand Totals
-     12024        766       1872         48       1464     360075   ELF Image Totals
-     12024        766       1872         48          0          0   ROM Totals
+     12032        770       1872         48       1464     360063   Grand Totals
+     12032        770       1872         48       1464     360063   ELF Image Totals
+     12032        770       1872         48          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                13896 (  13.57kB)
+    Total RO  Size (Code + RO Data)                13904 (  13.58kB)
     Total RW  Size (RW Data + ZI Data)              1512 (   1.48kB)
-    Total ROM Size (Code + RO Data + RW Data)      13944 (  13.62kB)
+    Total ROM Size (Code + RO Data + RW Data)      13952 (  13.63kB)
 
 ==============================================================================
 
