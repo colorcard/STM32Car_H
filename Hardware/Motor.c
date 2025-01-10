@@ -1,5 +1,6 @@
 #include "stm32f10x.h"                  // Device header
 #include "PWM.h"
+#include "main.c"
 
 #define LEFT 1
 #define RIGHT 2
@@ -84,4 +85,10 @@ void Motor_SetSpeed(int MotorStatus,int16_t Speed)
     {
         Motor_SetSpeedB(Speed);
     }
+}
+
+void motor_target_set(int left,int right)
+{
+    ecd_left.counter.count_increment=left;
+    ecd_left.counter.count_increment=right;
 }
