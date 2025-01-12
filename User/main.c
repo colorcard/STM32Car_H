@@ -7,6 +7,7 @@
 #include "pid.h"
 #include "Timer.h"
 #include "Serial.h"
+#include "gray_track.h"
 
 #define ADDKey 2
 #define DECKey 1
@@ -77,6 +78,7 @@ int main(void) {
     Timer_Init();//定时器初始化
 	Key_Init();
     Serial_Init();
+    gray_init();
 
 
     /*变量初始化*/
@@ -178,7 +180,16 @@ int main(void) {
             /*  Test */
             if (KeyNumMenu==2)//目前测试的进程
             {
-                OLED_ShowString(1,1,"Test");//1 Speed
+
+               OLED_ShowNum(1, 1, D1, 1);
+               OLED_ShowNum(1, 2, D2, 1);
+               OLED_ShowNum(1, 3, D3, 1);
+               OLED_ShowNum(1, 4, D4, 1);
+               OLED_ShowNum(1, 5, D5, 1);
+               OLED_ShowNum(1, 6, D6, 1);
+               OLED_ShowNum(1, 7, D7, 1);
+               OLED_ShowNum(1, 8, D8, 1);
+
             }
 
 

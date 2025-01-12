@@ -25,14 +25,14 @@ void gpio_init(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin, GPIOMode_TypeDef GPIO_Mod
 
 // 灰度传感器初始化
 void gray_init() {
-    gpio_init(GPIOB, GPIO_Pin_12, GPIO_Mode_IPU);  // D1
-    gpio_init(GPIOB, GPIO_Pin_13, GPIO_Mode_IPU);  // D2
-    gpio_init(GPIOB, GPIO_Pin_14, GPIO_Mode_IPU);  // D3
-    gpio_init(GPIOB, GPIO_Pin_15, GPIO_Mode_IPU);  // D4
-    gpio_init(GPIOA, GPIO_Pin_8, GPIO_Mode_IPU);   // D5
-    gpio_init(GPIOC, GPIO_Pin_13, GPIO_Mode_IPU);  // D6
-    gpio_init(GPIOC, GPIO_Pin_14, GPIO_Mode_IPU);  // D7
-    gpio_init(GPIOC, GPIO_Pin_15, GPIO_Mode_IPU);  // D8
+    gpio_init(GPIOA, GPIO_Pin_5, GPIO_Mode_IPU);  // D1
+    gpio_init(GPIOA, GPIO_Pin_4, GPIO_Mode_IPU);  // D2
+    gpio_init(GPIOB, GPIO_Pin_3, GPIO_Mode_IPU);  // D3
+    gpio_init(GPIOA, GPIO_Pin_8, GPIO_Mode_IPU);  // D4
+    gpio_init(GPIOC, GPIO_Pin_5, GPIO_Mode_IPU);   // D5
+    gpio_init(GPIOC, GPIO_Pin_4, GPIO_Mode_IPU);  // D6
+    gpio_init(GPIOB, GPIO_Pin_1, GPIO_Mode_IPU);  // D7
+    gpio_init(GPIOB, GPIO_Pin_0, GPIO_Mode_IPU);  // D8
 }
 
 void track()                        //1234 5678
@@ -115,8 +115,27 @@ unsigned char gpio_get(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin) {
 unsigned char digtal(unsigned char channel) // 1-8 获取对应通道的数值
 {
     // 通道和对应的 GPIO 配置
-    GPIO_TypeDef* gpio_ports[8] = {GPIOB, GPIOB, GPIOB, GPIOB, GPIOA, GPIOC, GPIOC, GPIOC};
-    uint16_t gpio_pins[8] = {GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15, GPIO_Pin_8, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15};
+    GPIO_TypeDef* gpio_ports[8] = {
+            GPIOB,  // D8
+            GPIOB,  // D7
+            GPIOC,  // D6
+            GPIOC,  // D5
+            GPIOA,  // D4
+            GPIOB,  // D3
+            GPIOA,  // D2
+            GPIOA   // D1
+    };
+
+    uint16_t gpio_pins[8] = {
+            GPIO_Pin_0,  // D8
+            GPIO_Pin_1,  // D7
+            GPIO_Pin_4,  // D6
+            GPIO_Pin_5,  // D5
+            GPIO_Pin_8,  // D4
+            GPIO_Pin_3,  // D3
+            GPIO_Pin_4,  // D2
+            GPIO_Pin_5   // D1
+    };
 
     // 检查通道是否有效
     if (channel < 1 || channel > 8) {

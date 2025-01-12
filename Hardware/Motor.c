@@ -1,6 +1,9 @@
 #include "stm32f10x.h"                  // Device header
 #include "PWM.h"
-#include "main.c"
+#include "Encoder.h"
+
+extern Encoder ecd_left;
+extern Encoder ecd_right;
 
 #define LEFT 1
 #define RIGHT 2
