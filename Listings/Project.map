@@ -335,6 +335,7 @@ Section Cross References
     main.o(i.main) refers to stm32f10x_gpio.o(i.GPIO_PinRemapConfig) for GPIO_PinRemapConfig
     main.o(i.main) refers to motor.o(i.Motor_Init) for Motor_Init
     main.o(i.main) refers to mpu6050.o(i.MPU6050_Init) for MPU6050_Init
+    main.o(i.main) refers to delay.o(i.Delay_ms) for Delay_ms
     main.o(i.main) refers to encoder.o(i.Encoder_Init_TIM_All) for Encoder_Init_TIM_All
     main.o(i.main) refers to timer.o(i.Timer_Init) for Timer_Init
     main.o(i.main) refers to key.o(i.Key_Init) for Key_Init
@@ -1268,13 +1269,13 @@ Image Symbol Table
     i.invSqrt                                0x08003674   Section        0  madgwickahrs.o(i.invSqrt)
     invSqrt                                  0x08003675   Thumb Code   108  madgwickahrs.o(i.invSqrt)
     i.main                                   0x080036e4   Section        0  main.o(i.main)
-    i.myCarControlCodeInit                   0x080039a0   Section        0  main.o(i.myCarControlCodeInit)
-    i.setPIDParam                            0x08003a6c   Section        0  pid.o(i.setPIDParam)
-    i.setPIDTarget                           0x08003a74   Section        0  pid.o(i.setPIDTarget)
-    i.sqrtf                                  0x08003a78   Section        0  sqrtf.o(i.sqrtf)
-    i.updateIMU                              0x08003aa4   Section        0  madgwickahrs.o(i.updateIMU)
-    .constdata                               0x08004084   Section     1520  oled.o(.constdata)
-    .constdata                               0x08004674   Section       16  main.o(.constdata)
+    i.myCarControlCodeInit                   0x080039a8   Section        0  main.o(i.myCarControlCodeInit)
+    i.setPIDParam                            0x08003a74   Section        0  pid.o(i.setPIDParam)
+    i.setPIDTarget                           0x08003a7c   Section        0  pid.o(i.setPIDTarget)
+    i.sqrtf                                  0x08003a80   Section        0  sqrtf.o(i.sqrtf)
+    i.updateIMU                              0x08003aac   Section        0  madgwickahrs.o(i.updateIMU)
+    .constdata                               0x0800408c   Section     1520  oled.o(.constdata)
+    .constdata                               0x0800467c   Section       16  main.o(.constdata)
     .data                                    0x20000000   Section       20  stm32f10x_rcc.o(.data)
     APBAHBPrescTable                         0x20000000   Data          16  stm32f10x_rcc.o(.data)
     ADCPrescTable                            0x20000010   Data           4  stm32f10x_rcc.o(.data)
@@ -1527,15 +1528,15 @@ Image Symbol Table
     getYaw                                   0x080035ed   Thumb Code    32  madgwickahrs.o(i.getYaw)
     initEncoder                              0x0800361d   Thumb Code    56  encoder.o(i.initEncoder)
     initPID                                  0x08003655   Thumb Code    30  pid.o(i.initPID)
-    main                                     0x080036e5   Thumb Code   572  main.o(i.main)
-    myCarControlCodeInit                     0x080039a1   Thumb Code   156  main.o(i.myCarControlCodeInit)
-    setPIDParam                              0x08003a6d   Thumb Code     8  pid.o(i.setPIDParam)
-    setPIDTarget                             0x08003a75   Thumb Code     4  pid.o(i.setPIDTarget)
-    sqrtf                                    0x08003a79   Thumb Code    44  sqrtf.o(i.sqrtf)
-    updateIMU                                0x08003aa5   Thumb Code  1474  madgwickahrs.o(i.updateIMU)
-    OLED_F8x16                               0x08004084   Data        1520  oled.o(.constdata)
-    Region$$Table$$Base                      0x08004684   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x080046a4   Number         0  anon$$obj.o(Region$$Table)
+    main                                     0x080036e5   Thumb Code   580  main.o(i.main)
+    myCarControlCodeInit                     0x080039a9   Thumb Code   156  main.o(i.myCarControlCodeInit)
+    setPIDParam                              0x08003a75   Thumb Code     8  pid.o(i.setPIDParam)
+    setPIDTarget                             0x08003a7d   Thumb Code     4  pid.o(i.setPIDTarget)
+    sqrtf                                    0x08003a81   Thumb Code    44  sqrtf.o(i.sqrtf)
+    updateIMU                                0x08003aad   Thumb Code  1474  madgwickahrs.o(i.updateIMU)
+    OLED_F8x16                               0x0800408c   Data        1520  oled.o(.constdata)
+    Region$$Table$$Base                      0x0800468c   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x080046ac   Number         0  anon$$obj.o(Region$$Table)
     overflow_count_TIM2                      0x20000014   Data           4  encoder.o(.data)
     overflow_count_TIM4                      0x20000018   Data           4  encoder.o(.data)
     Serial_RxFlag                            0x2000001c   Data           1  serial.o(.data)
@@ -1584,9 +1585,9 @@ Memory Map of the image
 
   Image Entry point : 0x08000131
 
-  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00004740, Max: 0x00040000, ABSOLUTE)
+  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00004748, Max: 0x00040000, ABSOLUTE)
 
-    Execution Region ER_IROM1 (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x000046a4, Max: 0x00040000, ABSOLUTE)
+    Execution Region ER_IROM1 (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x000046ac, Max: 0x00040000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -1769,30 +1770,30 @@ Memory Map of the image
     0x08003654   0x08003654   0x0000001e   Code   RO         3526    i.initPID           pid.o
     0x08003672   0x08003672   0x00000002   PAD
     0x08003674   0x08003674   0x00000070   Code   RO         3689    i.invSqrt           madgwickahrs.o
-    0x080036e4   0x080036e4   0x000002bc   Code   RO         3768    i.main              main.o
-    0x080039a0   0x080039a0   0x000000cc   Code   RO         3769    i.myCarControlCodeInit  main.o
-    0x08003a6c   0x08003a6c   0x00000008   Code   RO         3528    i.setPIDParam       pid.o
-    0x08003a74   0x08003a74   0x00000004   Code   RO         3529    i.setPIDTarget      pid.o
-    0x08003a78   0x08003a78   0x0000002c   Code   RO         3933    i.sqrtf             m_ws.l(sqrtf.o)
-    0x08003aa4   0x08003aa4   0x000005e0   Code   RO         3691    i.updateIMU         madgwickahrs.o
-    0x08004084   0x08004084   0x000005f0   Data   RO         3236    .constdata          oled.o
-    0x08004674   0x08004674   0x00000010   Data   RO         3771    .constdata          main.o
-    0x08004684   0x08004684   0x00000020   Data   RO         4068    Region$$Table       anon$$obj.o
+    0x080036e4   0x080036e4   0x000002c4   Code   RO         3768    i.main              main.o
+    0x080039a8   0x080039a8   0x000000cc   Code   RO         3769    i.myCarControlCodeInit  main.o
+    0x08003a74   0x08003a74   0x00000008   Code   RO         3528    i.setPIDParam       pid.o
+    0x08003a7c   0x08003a7c   0x00000004   Code   RO         3529    i.setPIDTarget      pid.o
+    0x08003a80   0x08003a80   0x0000002c   Code   RO         3933    i.sqrtf             m_ws.l(sqrtf.o)
+    0x08003aac   0x08003aac   0x000005e0   Code   RO         3691    i.updateIMU         madgwickahrs.o
+    0x0800408c   0x0800408c   0x000005f0   Data   RO         3236    .constdata          oled.o
+    0x0800467c   0x0800467c   0x00000010   Data   RO         3771    .constdata          main.o
+    0x0800468c   0x0800468c   0x00000020   Data   RO         4068    Region$$Table       anon$$obj.o
 
 
-    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x080046a4, Size: 0x00000668, Max: 0x0000c000, ABSOLUTE)
+    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x080046ac, Size: 0x00000668, Max: 0x0000c000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x20000000   0x080046a4   0x00000014   Data   RW         1805    .data               stm32f10x_rcc.o
-    0x20000014   0x080046b8   0x00000008   Data   RW         3445    .data               encoder.o
-    0x2000001c   0x080046c0   0x00000003   Data   RW         3575    .data               serial.o
-    0x2000001f   0x080046c3   0x00000001   PAD
-    0x20000020   0x080046c4   0x00000025   Data   RW         3692    .data               madgwickahrs.o
-    0x20000045   0x080046e9   0x00000003   PAD
-    0x20000048   0x080046ec   0x0000004e   Data   RW         3772    .data               main.o
-    0x20000096   0x0800473a   0x00000002   PAD
-    0x20000098   0x0800473c   0x00000004   Data   RW         4047    .data               mc_w.l(errno.o)
+    0x20000000   0x080046ac   0x00000014   Data   RW         1805    .data               stm32f10x_rcc.o
+    0x20000014   0x080046c0   0x00000008   Data   RW         3445    .data               encoder.o
+    0x2000001c   0x080046c8   0x00000003   Data   RW         3575    .data               serial.o
+    0x2000001f   0x080046cb   0x00000001   PAD
+    0x20000020   0x080046cc   0x00000025   Data   RW         3692    .data               madgwickahrs.o
+    0x20000045   0x080046f1   0x00000003   PAD
+    0x20000048   0x080046f4   0x0000004e   Data   RW         3772    .data               main.o
+    0x20000096   0x08004742   0x00000002   PAD
+    0x20000098   0x08004744   0x00000004   Data   RW         4047    .data               mc_w.l(errno.o)
     0x2000009c        -       0x00000064   Zero   RW         3574    .bss                serial.o
     0x20000100        -       0x00000168   Zero   RW         3770    .bss                main.o
     0x20000268        -       0x00000400   Zero   RW            1    STACK               startup_stm32f10x_hd.o
@@ -1810,7 +1811,7 @@ Image component sizes
        472         26          0          8          0       4411   encoder.o
        248         28          0          0          0        992   key.o
       2036        130          0         37          0       5077   madgwickahrs.o
-      1728        270         16         78        360       5497   main.o
+      1736        270         16         78        360       5501   main.o
        132         22          0          0          0     206031   misc.o
         64          4          0          0          0        461   motor.o
        638         36          0          0          0       3374   mpu6050.o
@@ -1830,7 +1831,7 @@ Image component sizes
        128          6          0          0          0        537   timer.o
 
     ----------------------------------------------------------------------
-     10668        876       1872        152       1484     390478   Object Totals
+     10676        876       1872        152       1484     390482   Object Totals
          0          0         32          0          0          0   (incl. Generated)
         30          0          0          6          0          0   (incl. Padding)
 
@@ -1903,15 +1904,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     16212       1098       1872        156       1484     386406   Grand Totals
-     16212       1098       1872        156       1484     386406   ELF Image Totals
-     16212       1098       1872        156          0          0   ROM Totals
+     16220       1098       1872        156       1484     386410   Grand Totals
+     16220       1098       1872        156       1484     386410   ELF Image Totals
+     16220       1098       1872        156          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                18084 (  17.66kB)
+    Total RO  Size (Code + RO Data)                18092 (  17.67kB)
     Total RW  Size (RW Data + ZI Data)              1640 (   1.60kB)
-    Total ROM Size (Code + RO Data + RW Data)      18240 (  17.81kB)
+    Total ROM Size (Code + RO Data + RW Data)      18248 (  17.82kB)
 
 ==============================================================================
 

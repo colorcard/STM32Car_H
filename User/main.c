@@ -116,6 +116,7 @@ int main(void) {
 	GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE); // 禁用 JTAG/SWD 调试引脚
 	Motor_Init();
 	MPU6050_Init();
+    Delay_ms(1000);
     Encoder_Init_TIM_All();
     Timer_Init();//定时器初始化
 	//Timer8_Init();
@@ -125,6 +126,7 @@ int main(void) {
 
     begin(1000.0f / (float)mpu6050.MPU6050dt);
     //dataGetERROR();
+	//Delay_ms(1000);
 
 
     /*变量初始化*/
