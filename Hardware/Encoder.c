@@ -200,11 +200,11 @@ void updateEncoderLoopSimpleVersion(Encoder* ecd, uint16_t loop_period,TIM_TypeD
     ecd->counter.count_total += ecd->counter.count_increment;
 
     //-----position
-    ecd->position.rotations = (double)ecd->counter.count_total / ((double)ecd->param.multiple * ecd->param.reduction_ratio * (double)ecd->param.ppr);
-    ecd->position.angle = ecd->position.rotations * 360.0;
-    ecd->position.distance = ecd->position.rotations / 60.0 * PI * 2.0 * ecd->param.r;
+//    ecd->position.rotations = (double)ecd->counter.count_total / ((double)ecd->param.multiple * ecd->param.reduction_ratio * (double)ecd->param.ppr);
+//    ecd->position.angle = ecd->position.rotations * 360.0;
+//    ecd->position.distance = ecd->position.rotations / 60.0 * PI * 2.0 * ecd->param.r;
 
     //-----velocity
-    ecd->velocity.angular = (float)(ecd->counter.count_increment/((float)ecd->param.multiple * ecd->param.reduction_ratio * (float)ecd->param.ppr) * 1000.0 / loop_period * 60);
-    ecd->velocity.linear = (float)(ecd->velocity.angular/60.0 * PI * 2.0 * ecd->param.r);
+//    ecd->velocity.angular = (float)(ecd->counter.count_increment/((float)ecd->param.multiple * ecd->param.reduction_ratio * (float)ecd->param.ppr) * 1000.0 / loop_period * 60);
+//    ecd->velocity.linear = (float)(ecd->velocity.angular/60.0 * PI * 2.0 * ecd->param.r);
 }

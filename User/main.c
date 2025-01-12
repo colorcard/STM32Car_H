@@ -8,6 +8,7 @@
 #include "Timer.h"
 #include "Serial.h"
 #include "gray_track.h"
+#include "MPU6050.h"
 
 #define ADDKey 2
 #define DECKey 1
@@ -18,6 +19,24 @@
 
 
 
+/*------- ------IMU变量------------- ---*/
+
+int16_t Ax,Ay,Az,Gx,Gy,Gz;
+
+// 量程缩放示例 (假设 ±2000°/s 对应缩放因子约为 16.4，需根据实际配置)
+#define GYRO_SCALE 16.4f
+
+// 陀螺仪零漂：可在静止状态下测量一段时间的数据做平均值校准
+static float gyroOffsetZ = 0.0f;
+
+// 偏航角，全局维护
+static float yaw = 0.0f;
+
+// 中断周期（秒），由你的硬件配置得知 (100ms = 0.1s)
+#define DT 0.1f
+
+
+/*-------------按键变量-------------------*/
 
 uint8_t KeyNum;		//定义用于接收按键键码的变量
 uint8_t KeyNumMenu=1;		//定义用于接收按键页码
@@ -27,9 +46,9 @@ uint8_t MenuFlag=0;        //定义菜单标志,0为主菜单,1为子菜单
 uint8_t LastKeyNumMenu=1;		//定义用于上一次接收按键页码
 uint8_t LastMenuFlag=0;        //上一次定义菜单标志,0为主菜单,1为子菜单
 
-int Temp=0;
 
 
+/*-------------电机变量-------------------*/
 
 int16_t Speed;		//定义速度变量
 
@@ -37,10 +56,9 @@ Encoder ecd_left;
 Encoder ecd_right;
 
 PID vec_left;
-PID pos_left;
 PID vec_right;
-PID pos_right;
 
+/*-------------函数声明-------------------*/
 void myCarControlCodeInit(){
     Parameter param = {4, 28, 13, 0.065};
     initEncoder(&ecd_left,param);
@@ -54,57 +72,27 @@ void myCarControlCodeInit(){
     setPIDParam(&vec_right, 11, 0.5,0.5);
     setPIDTarget(&vec_right, 0);
 
-    //pos pid init
-    //initPID(&pos_left, 300, 5000);// 300 -> rpm
-    //setPIDParam(&pos_left, 0.9, 0.0,0.0);
-    //setPIDTarget(&pos_left, 0);
-
-    //initPID(&pos_right, 300, 5000);
-    //setPIDParam(&pos_right, 0.9, 0.0,0.0);
-    //setPIDTarget(&pos_right, 0);
-
 }
 
-
-
-
+/*-------------主函数-------------------*/
 
 int main(void) {
     /*模块初始化*/
     OLED_Init();
-	//GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE); // 禁用 JTAG/SWD 调试引脚
-	
-	
-	
-	
 	Motor_Init();
     Encoder_Init_TIM_All();
+    MPU6050_Init();
+    Delay_ms(1000);//延时1s
+
     Timer_Init();//定时器初始化
 	Key_Init();
 	Serial_Init();
 	gray_init();
-	
-    
-    
-
 
     /*变量初始化*/
     myCarControlCodeInit();
-	//Delay_ms(1000);
 
-
-
-
-
-    /*Menu*/
-    OLED_ShowString(1,1,"1 Speed");//1 Speed
-
-
-
-
-
-
-
+    /*主循环*/
     while (1) {
         if (LastKeyNumMenu!=KeyNumMenu||LastMenuFlag!=MenuFlag){
             OLED_Clear();
@@ -146,52 +134,15 @@ int main(void) {
             /*  速度操作 */
             if (KeyNumMenu==1)
             {
-				//motor_target_set(100,100);
-				//setPIDTarget(&vec_right, 100);
-				//setPIDTarget(&vec_left, 100);
-				
-				
-				//Motor_SetSpeedB(200);
-				//Motor_SetSpeedA(200);
-				
-				
-				
                 OLED_ShowString(1,1,"Speed");//1 Speed
                 OLED_ShowSignedNum(2,1,Speed,5);//SpeedNum
                 OLED_ShowSignedNum(3,1,(int32_t)ecd_left.counter.count_increment,8);//
                 OLED_ShowSignedNum(4,1,(int32_t)ecd_right.counter.count_increment,8);//
-//                OLED_ShowNum(4,1,Temp,8);//
 
                 Serial_Printf("Speed:%lld,",ecd_left.counter.count_increment);
 				Serial_Printf("%lld\n",ecd_right.counter.count_increment);
-//                if (KeyNum == ADDKey)
-//                {
-//                    Speed += 200;					//速度变量自增20
-//                    if (Speed > 4000)				//速度变量超过100后
-//                    {
-//                        Speed = 4000;				//速度变量变为-100
-//                        //此操作会让电机旋转方向突然改变，可能会因供电不足而导致单片机复位
-//                        //若出现了此现象，则应避免使用这样的操作
-//                    }
-//                }
-//                if (KeyNum == DECKey)
-//                {
-//                    Speed -= 200;					//速度变量自增20
-//                    if (Speed < -4000)				//速度变量超过100后
-//                    {
-//                        Speed = -4000;				//速度变量变为-100
-//                        //此操作会让电机旋转方向突然改变，可能会因供电不足而导致单片机复位
-//                        //若出现了此现象，则应避免使用这样的操作
-//                    }
-//                }
 
-
-//                Motor_SetSpeedA(Speed);				//设置直流电机的速度为速度变量
-//                Motor_SetSpeedB(Speed);
             }
-
-
-
             /*  Test */
             if (KeyNumMenu==2)//目前测试的进程
             {
@@ -240,26 +191,28 @@ void TIM1_UP_IRQHandler(void)
 {
     if (TIM_GetITStatus(TIM1, TIM_IT_Update) == SET)
     {
-        Temp = TIM_GetCounter(TIM2);
         updateEncoderLoopSimpleVersion(&ecd_left, 100, TIM2);
         updateEncoderLoopSimpleVersion(&ecd_right, 100, TIM4);
-
-//        updatePID(&pos_left, ecd_left.position.angle);
-//        setPIDTarget(&vec_left, pos_left.output);
-//        updatePID(&vec_left, ecd_left.velocity.angular);
-//
-//        updatePID(&pos_right, ecd_right.position.angle);
-//        setPIDTarget(&vec_right, pos_right.output);
-//        updatePID(&vec_right, ecd_right.velocity.angular);
 
         updatePID(&vec_left, ecd_left.counter.count_increment);
         updatePID(&vec_right, ecd_right.counter.count_increment);
 
+        MPU6050_GetData(&Ax, &Ay, &Az, &Gx, &Gy, &Gz);
+
+        // 2. 去除零漂，并转换为度/秒
+        float gz = (float)(Gz - (int16_t)gyroOffsetZ) / GYRO_SCALE;
+
+        // 3. 积分计算 yaw （简单积分，单位：度）
+        yaw += gz * DT;
+
+        // 4. 限制 yaw 的范围在 -180° 到 180° 之间
+        if (yaw > 180.0f)
+            yaw -= 360.0f;
+        else if (yaw < -180.0f)
+            yaw += 360.0f;
 
         Motor_SetSpeedA(vec_left.output);
         Motor_SetSpeedB(vec_right.output);
-		
-
 
 
         TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
