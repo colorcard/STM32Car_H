@@ -59,6 +59,7 @@ PID vec_left;
 PID vec_right;
 
 /*-------------函数声明-------------------*/
+
 void myCarControlCodeInit(){
     Parameter param = {4, 28, 13, 0.065};
     initEncoder(&ecd_left,param);
@@ -94,6 +95,12 @@ int main(void) {
 
     /*主循环*/
     while (1) {
+
+        /*电机速度控制*/
+        Motor_SetSpeedA(vec_left.output);
+        Motor_SetSpeedB(vec_right.output);
+
+
         if (LastKeyNumMenu!=KeyNumMenu||LastMenuFlag!=MenuFlag){
             OLED_Clear();
             LastKeyNumMenu=KeyNumMenu;
@@ -139,8 +146,8 @@ int main(void) {
                 OLED_ShowSignedNum(3,1,(int32_t)ecd_left.counter.count_increment,8);//
                 OLED_ShowSignedNum(4,1,(int32_t)ecd_right.counter.count_increment,8);//
 
-                Serial_Printf("Speed:%lld,",ecd_left.counter.count_increment);
-				Serial_Printf("%lld\n",ecd_right.counter.count_increment);
+//                Serial_Printf("Speed:%lld,",ecd_left.counter.count_increment);
+//				Serial_Printf("%lld\n",ecd_right.counter.count_increment);
 
             }
             /*  Test */
@@ -210,10 +217,6 @@ void TIM1_UP_IRQHandler(void)
             yaw -= 360.0f;
         else if (yaw < -180.0f)
             yaw += 360.0f;
-
-        Motor_SetSpeedA(vec_left.output);
-        Motor_SetSpeedB(vec_right.output);
-
 
         TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
     }
