@@ -1,9 +1,12 @@
 #include "stm32f10x.h"                  // Device header
 #include "PWM.h"
 #include "Encoder.h"
+#include "pid.h"
 
 extern Encoder ecd_left;
 extern Encoder ecd_right;
+extern PID vec_left;
+extern PID vec_right;
 
 #define LEFT 1
 #define RIGHT 2
@@ -92,6 +95,7 @@ void Motor_SetSpeed(int MotorStatus,int16_t Speed)
 
 void motor_target_set(int left,int right)
 {
-    ecd_left.counter.count_increment=left;
-    ecd_left.counter.count_increment=right;
+    setPIDTarget(&vec_left, left);
+	setPIDTarget(&vec_right, right);
+	
 }

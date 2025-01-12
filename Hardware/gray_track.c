@@ -8,7 +8,8 @@ void gpio_init(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin, GPIOMode_TypeDef GPIO_Mod
     if (GPIOx == GPIOA) {
         RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
     } else if (GPIOx == GPIOB) {
-        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);	 //使能GPIOB时钟和复用功能（要先打开复用才能修改复用功能）
+		GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);	
     } else if (GPIOx == GPIOC) {
         RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
     } else if (GPIOx == GPIOD) {
@@ -27,12 +28,12 @@ void gpio_init(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin, GPIOMode_TypeDef GPIO_Mod
 void gray_init() {
     gpio_init(GPIOA, GPIO_Pin_5, GPIO_Mode_IPU);  // D1
     gpio_init(GPIOA, GPIO_Pin_4, GPIO_Mode_IPU);  // D2
-    gpio_init(GPIOB, GPIO_Pin_3, GPIO_Mode_IPU);  // D3
+    //gpio_init(GPIOB, GPIO_Pin_3, GPIO_Mode_IPU);  // D3
     gpio_init(GPIOA, GPIO_Pin_8, GPIO_Mode_IPU);  // D4
     gpio_init(GPIOC, GPIO_Pin_5, GPIO_Mode_IPU);   // D5
     gpio_init(GPIOC, GPIO_Pin_4, GPIO_Mode_IPU);  // D6
-    gpio_init(GPIOB, GPIO_Pin_1, GPIO_Mode_IPU);  // D7
-    gpio_init(GPIOB, GPIO_Pin_0, GPIO_Mode_IPU);  // D8
+    //gpio_init(GPIOB, GPIO_Pin_1, GPIO_Mode_IPU);  // D7
+    //gpio_init(GPIOB, GPIO_Pin_0, GPIO_Mode_IPU);  // D8
 }
 
 void track()                        //1234 5678

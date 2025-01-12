@@ -1,6 +1,6 @@
 #include "stm32f10x.h"  // Device header
 #include "OLED.h"
-//#include "Delay.h"
+#include "Delay.h"
 #include "Motor.h"
 #include "Key.h"
 #include "Encoder.h"
@@ -48,20 +48,20 @@ void myCarControlCodeInit(){
     //vec pid init
     initPID(&vec_left, 2100, 5000);
     setPIDParam(&vec_left, 11, 0.5,0.5);
-    //setPIDTarget(&vec_left, 100);
+    setPIDTarget(&vec_left, 0);
 
     initPID(&vec_right, 2100, 5000);
     setPIDParam(&vec_right, 11, 0.5,0.5);
-    //setPIDTarget(&vec_right, 100);
+    setPIDTarget(&vec_right, 0);
 
     //pos pid init
-    initPID(&pos_left, 300, 5000);// 300 -> rpm
-    setPIDParam(&pos_left, 0.9, 0.0,0.0);
-    setPIDTarget(&pos_left, 0);
+    //initPID(&pos_left, 300, 5000);// 300 -> rpm
+    //setPIDParam(&pos_left, 0.9, 0.0,0.0);
+    //setPIDTarget(&pos_left, 0);
 
-    initPID(&pos_right, 300, 5000);
-    setPIDParam(&pos_right, 0.9, 0.0,0.0);
-    setPIDTarget(&pos_right, 0);
+    //initPID(&pos_right, 300, 5000);
+    //setPIDParam(&pos_right, 0.9, 0.0,0.0);
+    //setPIDTarget(&pos_right, 0);
 
 }
 
@@ -72,17 +72,25 @@ void myCarControlCodeInit(){
 int main(void) {
     /*模块初始化*/
     OLED_Init();
-	GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE); // 禁用 JTAG/SWD 调试引脚
+	//GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE); // 禁用 JTAG/SWD 调试引脚
+	
+	
+	
+	
 	Motor_Init();
     Encoder_Init_TIM_All();
     Timer_Init();//定时器初始化
 	Key_Init();
-    Serial_Init();
-    gray_init();
+	Serial_Init();
+	gray_init();
+	
+    
+    
 
 
     /*变量初始化*/
     myCarControlCodeInit();
+	//Delay_ms(1000);
 
 
 
@@ -138,9 +146,16 @@ int main(void) {
             /*  速度操作 */
             if (KeyNumMenu==1)
             {
-				setPIDTarget(&vec_left, 100);
-				setPIDTarget(&vec_right, 100);
-
+				//motor_target_set(100,100);
+				//setPIDTarget(&vec_right, 100);
+				//setPIDTarget(&vec_left, 100);
+				
+				
+				//Motor_SetSpeedB(200);
+				//Motor_SetSpeedA(200);
+				
+				
+				
                 OLED_ShowString(1,1,"Speed");//1 Speed
                 OLED_ShowSignedNum(2,1,Speed,5);//SpeedNum
                 OLED_ShowSignedNum(3,1,(int32_t)ecd_left.counter.count_increment,8);//
@@ -149,26 +164,26 @@ int main(void) {
 
                 Serial_Printf("Speed:%lld,",ecd_left.counter.count_increment);
 				Serial_Printf("%lld\n",ecd_right.counter.count_increment);
-                if (KeyNum == ADDKey)
-                {
-                    Speed += 200;					//速度变量自增20
-                    if (Speed > 4000)				//速度变量超过100后
-                    {
-                        Speed = 4000;				//速度变量变为-100
-                        //此操作会让电机旋转方向突然改变，可能会因供电不足而导致单片机复位
-                        //若出现了此现象，则应避免使用这样的操作
-                    }
-                }
-                if (KeyNum == DECKey)
-                {
-                    Speed -= 200;					//速度变量自增20
-                    if (Speed < -4000)				//速度变量超过100后
-                    {
-                        Speed = -4000;				//速度变量变为-100
-                        //此操作会让电机旋转方向突然改变，可能会因供电不足而导致单片机复位
-                        //若出现了此现象，则应避免使用这样的操作
-                    }
-                }
+//                if (KeyNum == ADDKey)
+//                {
+//                    Speed += 200;					//速度变量自增20
+//                    if (Speed > 4000)				//速度变量超过100后
+//                    {
+//                        Speed = 4000;				//速度变量变为-100
+//                        //此操作会让电机旋转方向突然改变，可能会因供电不足而导致单片机复位
+//                        //若出现了此现象，则应避免使用这样的操作
+//                    }
+//                }
+//                if (KeyNum == DECKey)
+//                {
+//                    Speed -= 200;					//速度变量自增20
+//                    if (Speed < -4000)				//速度变量超过100后
+//                    {
+//                        Speed = -4000;				//速度变量变为-100
+//                        //此操作会让电机旋转方向突然改变，可能会因供电不足而导致单片机复位
+//                        //若出现了此现象，则应避免使用这样的操作
+//                    }
+//                }
 
 
 //                Motor_SetSpeedA(Speed);				//设置直流电机的速度为速度变量
@@ -189,6 +204,7 @@ int main(void) {
                OLED_ShowNum(1, 6, D6, 1);
                OLED_ShowNum(1, 7, D7, 1);
                OLED_ShowNum(1, 8, D8, 1);
+				//track();
 
             }
 

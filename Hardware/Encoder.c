@@ -72,9 +72,11 @@ void Encoder_Init_TIM4(void)//Motor B
     TIM_ICInitTypeDef TIM_ICInitStructure;
     GPIO_InitTypeDef GPIO_InitStructure;
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);//使能定时器4的时钟
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);//使能PB端口时钟
+	
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);	 //使能GPIOB时钟和复用功能（要先打开复用才能修改复用功能）
+	GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);	
 
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6|GPIO_Pin_7;	//端口配置
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6|GPIO_Pin_7|GPIO_Pin_1|GPIO_Pin_0|GPIO_Pin_3;	//端口配置
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU; //浮空输入
     GPIO_Init(GPIOB, &GPIO_InitStructure);					      //根据设定参数初始化GPIOB
 
@@ -187,7 +189,7 @@ void updateEncoderLoopSimpleVersion(Encoder* ecd, uint16_t loop_period,TIM_TypeD
     //-----counter
     // counter_now
     ecd->counter.count_now = Encoder_Get(TIMx);
-    if (ecd->counter.count_now < 0) {
+    if (TIMx == TIM4){
         ecd->counter.count_now = -ecd->counter.count_now;
     }
 
