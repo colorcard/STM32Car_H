@@ -5,26 +5,6 @@
 #define MPU6050_ADDRESS		0xD0		//MPU6050的I2C从机地址
 
 /**
-  * 函    数：MPU6050等待事件
-  * 参    数：同I2C_CheckEvent
-  * 返 回 值：无
-  */
-void MPU6050_WaitEvent(I2C_TypeDef* I2Cx, uint32_t I2C_EVENT)
-{
-	uint32_t Timeout;
-	Timeout = 10000;									//给定超时计数时间
-	while (I2C_CheckEvent(I2Cx, I2C_EVENT) != SUCCESS)	//循环等待指定事件
-	{
-		Timeout --;										//等待时，计数值自减
-		if (Timeout == 0)								//自减到0后，等待超时
-		{
-			/*超时的错误处理代码，可以添加到此处*/
-			break;										//跳出等待，不等了
-		}
-	}
-}
-
-/**
   * 函    数：MPU6050写寄存器
   * 参    数：RegAddress 寄存器地址，范围：参考MPU6050手册的寄存器描述
   * 参    数：Data 要写入寄存器的数据，范围：0x00~0xFF
@@ -32,19 +12,14 @@ void MPU6050_WaitEvent(I2C_TypeDef* I2Cx, uint32_t I2C_EVENT)
   */
 void MPU6050_WriteReg(uint8_t RegAddress, uint8_t Data)
 {
-	I2C_GenerateSTART(I2C2, ENABLE);										//硬件I2C生成起始条件
-	MPU6050_WaitEvent(I2C2, I2C_EVENT_MASTER_MODE_SELECT);					//等待EV5
-	
-	I2C_Send7bitAddress(I2C2, MPU6050_ADDRESS, I2C_Direction_Transmitter);	//硬件I2C发送从机地址，方向为发送
-	MPU6050_WaitEvent(I2C2, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED);	//等待EV6
-	
-	I2C_SendData(I2C2, RegAddress);											//硬件I2C发送寄存器地址
-	MPU6050_WaitEvent(I2C2, I2C_EVENT_MASTER_BYTE_TRANSMITTING);			//等待EV8
-	
-	I2C_SendData(I2C2, Data);												//硬件I2C发送数据
-	MPU6050_WaitEvent(I2C2, I2C_EVENT_MASTER_BYTE_TRANSMITTED);				//等待EV8_2
-	
-	I2C_GenerateSTOP(I2C2, ENABLE);											//硬件I2C生成终止条件
+	MyI2C_Start();						//I2C起始
+	MyI2C_SendByte(MPU6050_ADDRESS);	//发送从机地址，读写位为0，表示即将写入
+	MyI2C_ReceiveAck();					//接收应答
+	MyI2C_SendByte(RegAddress);			//发送寄存器地址
+	MyI2C_ReceiveAck();					//接收应答
+	MyI2C_SendByte(Data);				//发送要写入寄存器的数据
+	MyI2C_ReceiveAck();					//接收应答
+	MyI2C_Stop();						//I2C终止
 }
 
 /**
@@ -56,31 +31,22 @@ uint8_t MPU6050_ReadReg(uint8_t RegAddress)
 {
 	uint8_t Data;
 	
-	I2C_GenerateSTART(I2C2, ENABLE);										//硬件I2C生成起始条件
-	MPU6050_WaitEvent(I2C2, I2C_EVENT_MASTER_MODE_SELECT);					//等待EV5
+	MyI2C_Start();						//I2C起始
+	MyI2C_SendByte(MPU6050_ADDRESS);	//发送从机地址，读写位为0，表示即将写入
+	MyI2C_ReceiveAck();					//接收应答
+	MyI2C_SendByte(RegAddress);			//发送寄存器地址
+	MyI2C_ReceiveAck();					//接收应答
 	
-	I2C_Send7bitAddress(I2C2, MPU6050_ADDRESS, I2C_Direction_Transmitter);	//硬件I2C发送从机地址，方向为发送
-	MPU6050_WaitEvent(I2C2, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED);	//等待EV6
-	
-	I2C_SendData(I2C2, RegAddress);											//硬件I2C发送寄存器地址
-	MPU6050_WaitEvent(I2C2, I2C_EVENT_MASTER_BYTE_TRANSMITTED);				//等待EV8_2
-	
-	I2C_GenerateSTART(I2C2, ENABLE);										//硬件I2C生成重复起始条件
-	MPU6050_WaitEvent(I2C2, I2C_EVENT_MASTER_MODE_SELECT);					//等待EV5
-	
-	I2C_Send7bitAddress(I2C2, MPU6050_ADDRESS, I2C_Direction_Receiver);		//硬件I2C发送从机地址，方向为接收
-	MPU6050_WaitEvent(I2C2, I2C_EVENT_MASTER_RECEIVER_MODE_SELECTED);		//等待EV6
-	
-	I2C_AcknowledgeConfig(I2C2, DISABLE);									//在接收最后一个字节之前提前将应答失能
-	I2C_GenerateSTOP(I2C2, ENABLE);											//在接收最后一个字节之前提前申请停止条件
-	
-	MPU6050_WaitEvent(I2C2, I2C_EVENT_MASTER_BYTE_RECEIVED);				//等待EV7
-	Data = I2C_ReceiveData(I2C2);											//接收数据寄存器
-	
-	I2C_AcknowledgeConfig(I2C2, ENABLE);									//将应答恢复为使能，为了不影响后续可能产生的读取多字节操作
+	MyI2C_Start();						//I2C重复起始
+	MyI2C_SendByte(MPU6050_ADDRESS | 0x01);	//发送从机地址，读写位为1，表示即将读取
+	MyI2C_ReceiveAck();					//接收应答
+	Data = MyI2C_ReceiveByte();			//接收指定寄存器的数据
+	MyI2C_SendAck(1);					//发送应答，给从机非应答，终止从机的数据输出
+	MyI2C_Stop();						//I2C终止
 	
 	return Data;
 }
+
 
 /**
   * 函    数：MPU6050初始化
@@ -147,5 +113,6 @@ void MPU6050_GetData(int16_t *AccX, int16_t *AccY, int16_t *AccZ,
 	DataL = MPU6050_ReadReg(MPU6050_GYRO_ZOUT_L);		//读取陀螺仪Z轴的低8位数据
 	*GyroZ = (DataH << 8) | DataL;						//数据拼接，通过输出参数返回
 }
+
 
 
