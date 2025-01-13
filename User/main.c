@@ -8,13 +8,15 @@
 #include "Timer.h"
 #include "Serial.h"
 #include "gray_track.h"
+#include "MPU6050.h"
+#include "MadgwickAHRS.h"
 
 
 
 
 
 
-
+/*---------------------宏定义---------------------*/
 #define LEFT 1
 #define RIGHT 2
 
@@ -31,9 +33,6 @@ uint8_t MenuFlag=0;        //定义菜单标志,0为主菜单,1为子菜单
 uint8_t LastKeyNumMenu=1;		//定义用于上一次接收按键页码
 uint8_t LastMenuFlag=0;        //上一次定义菜单标志,0为主菜单,1为子菜单
 
-
-
-
 /*---------------------速度定义---------------------*/
 int16_t Speed;		//定义速度变量
 
@@ -42,6 +41,50 @@ Encoder ecd_right;
 
 PID vec_left;
 PID vec_right;
+
+/*---------------------MPU6050变量定义---------------------*/
+int16_t AX, AY, AZ, GX, GY, GZ;
+uint64_t millis;                        //millis为当前程序运行的时间，类似arduino里millis()函数
+
+uint8_t ID;								//定义用于存放ID号的变量
+
+MPU6050Params mpu6050 = {
+        .MPU6050dt = 10,
+        .preMillis = 0,
+        .MPU6050ERROE = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}
+};
+
+SensorMsg msg = {
+        .A = {0.0f, 0.0f, 0.0f},
+        .G = {0.0f, 0.0f, 0.0f}
+};
+
+void MPU6050Print() {
+    OLED_ShowSignedNum(2, 1, msg.A[0], 3);					  //OLED显示数据
+    OLED_ShowNum(2, 6, (uint32_t)(msg.A[0] * 100) % 100, 1);
+    OLED_ShowSignedNum(3, 1, msg.A[1], 3);
+    OLED_ShowNum(3, 6, (uint32_t)(msg.A[1] * 100) % 100, 1);
+    OLED_ShowSignedNum(4, 1, msg.A[2], 3);
+    OLED_ShowNum(4, 6, (uint32_t)(msg.A[2] * 100) % 100, 1);
+    OLED_ShowSignedNum(2, 8, msg.G[0], 3);
+    OLED_ShowNum(2, 13, (uint32_t)(msg.G[0] * 100) % 100, 1);
+    OLED_ShowSignedNum(3, 8, msg.G[1], 3);
+    OLED_ShowNum(3, 13, (uint32_t)(msg.G[1] * 100) % 100, 1);
+    OLED_ShowSignedNum(4, 8, msg.G[2], 3);
+    OLED_ShowNum(4, 13, (uint32_t)(msg.G[2] * 100) % 100, 1);
+}
+
+void EularPrint() {
+    OLED_ShowString(2, 1, "Yaw:");
+    OLED_ShowSignedNum(2, 8, getYaw(), 3);
+    OLED_ShowNum(2, 13, (uint32_t)(getYaw() * 100) % 100, 2);
+    OLED_ShowString(3, 1, "Roll:");
+    OLED_ShowSignedNum(3, 8, getRoll(), 3);
+    OLED_ShowNum(3, 13, (uint32_t)(getRoll() * 100) % 100, 2);
+    OLED_ShowString(4, 1, "Pitch:");
+    OLED_ShowSignedNum(4, 8, getPitch(), 3);
+    OLED_ShowNum(4, 13, (uint32_t)(getPitch() * 100) % 100, 2);
+}
 
 
 /*---------------------初始化函数---------------------*/
@@ -66,9 +109,17 @@ void myCarControlCodeInit(){
 int main(void) {
     /*模块初始化*/
     OLED_Init();
+    begin(1000.0f / (float)mpu6050.MPU6050dt);
+
 	Motor_Init();
+//	Delay_ms(1000);
+    MPU6050_Init();
+//	Delay_ms(1000);
     Encoder_Init_TIM_All();
     Timer_Init();//定时器初始化
+    TIM8_Init();
+
+    dataGetERROR();
 	Key_Init();
 	Serial_Init();
 	gray_init();
@@ -83,6 +134,12 @@ int main(void) {
 
 
     while (1) {
+
+        if(millis - mpu6050.preMillis >= mpu6050.MPU6050dt) {
+            mpu6050.preMillis = millis;
+            dataGetAndFilter();		                            //获取MPU6050的数据
+            updateIMU(msg.G[0], msg.G[1], msg.G[2], msg.A[0], msg.A[1], msg.A[2]);
+        }
 
         Motor_SetSpeedA(vec_left.output);
         Motor_SetSpeedB(vec_right.output);
@@ -145,15 +202,17 @@ int main(void) {
             if (KeyNumMenu==2)//目前测试的进程
             {
 
-               OLED_ShowNum(1, 1, D1, 1);
-               OLED_ShowNum(1, 2, D2, 1);
-               OLED_ShowNum(1, 3, D3, 1);
-               OLED_ShowNum(1, 4, D4, 1);
-               OLED_ShowNum(1, 5, D5, 1);
-               OLED_ShowNum(1, 6, D6, 1);
-               OLED_ShowNum(1, 7, D7, 1);
-               OLED_ShowNum(1, 8, D8, 1);
+                OLED_ShowNum(1, 1, millis, 7);
+//               OLED_ShowNum(1, 2, D2, 1);
+//               OLED_ShowNum(1, 3, D3, 1);
+//               OLED_ShowNum(1, 4, D4, 1);
+//               OLED_ShowNum(1, 5, D5, 1);
+//               OLED_ShowNum(1, 6, D6, 1);
+//               OLED_ShowNum(1, 7, D7, 1);
+//               OLED_ShowNum(1, 8, D8, 1);
 				//track();
+                EularPrint();
+                Serial_Printf("All:%f,%f,%f\n",getYaw(),getRoll(),getPitch());
 
             }
 
@@ -192,6 +251,8 @@ void TIM1_UP_IRQHandler(void)//100ms
         updateEncoderLoopSimpleVersion(&ecd_left, 100, TIM2);
         updateEncoderLoopSimpleVersion(&ecd_right, 100, TIM4);
 
+        
+
         updatePID(&vec_left, ecd_left.counter.count_increment);
         updatePID(&vec_right, ecd_right.counter.count_increment);
 
@@ -199,3 +260,57 @@ void TIM1_UP_IRQHandler(void)//100ms
         TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
     }
 }//速度计时器中断服务函数
+
+void TIM8_UP_IRQHandler(void)
+{
+    if (TIM_GetITStatus(TIM8, TIM_IT_Update) != RESET)
+    {
+        // 用户任务代码
+        // ...
+        millis++;
+        // 清除中断标志位
+        TIM_ClearITPendingBit(TIM8, TIM_IT_Update);
+    }
+}
+
+
+
+/*---------------------MPU6050数据获取函数---------------------*/
+void dataGetERROR() {
+    for(uint8_t i = 0; i < 100; ++i) {
+        getMPU6050Data();
+        mpu6050.MPU6050ERROE[0] += msg.A[0];
+        mpu6050.MPU6050ERROE[1] += msg.A[1];
+        mpu6050.MPU6050ERROE[2] += msg.A[2] - 9.8;
+        mpu6050.MPU6050ERROE[3] += msg.G[0];
+        mpu6050.MPU6050ERROE[4] += msg.G[1];
+        mpu6050.MPU6050ERROE[5] += msg.G[2];
+        Delay_ms(10);
+    }
+    for(uint8_t i = 0; i < 6; ++i) {
+        mpu6050.MPU6050ERROE[i] /= 100.0f;
+    }
+}
+
+
+void getMPU6050Data() {
+    MPU6050_GetData(&AX, &AY, &AZ, &GX, &GY, &GZ);		//获取MPU6050的数据
+    msg.A[0] = (float)((float)AX / (float)32768) * 16 * 9.8;
+    msg.A[1] = (float)((float)AY / (float)32768) * 16 * 9.8;
+    msg.A[2] = (float)((float)AZ / (float)32768) * 16 * 9.8;
+    msg.G[0] = (float)((float)GX / (float)32768) * 2000 * 3.5;
+    msg.G[1] = (float)((float)GY / (float)32768) * 2000 * 3.5;
+    msg.G[2] = (float)((float)GZ / (float)32768) * 2000 * 3.5;
+
+}
+
+void dataGetAndFilter() {
+    getMPU6050Data();
+    msg.A[0] -= mpu6050.MPU6050ERROE[0];
+    msg.A[1] -= mpu6050.MPU6050ERROE[1];
+    msg.A[2] -= mpu6050.MPU6050ERROE[2];
+    msg.G[0] -= mpu6050.MPU6050ERROE[3];
+    msg.G[1] -= mpu6050.MPU6050ERROE[4];
+    msg.G[2] -= mpu6050.MPU6050ERROE[5];
+}
+
