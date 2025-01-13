@@ -8,6 +8,7 @@
 #include "Timer.h"
 #include "Serial.h"
 #include "gray_track.h"
+#include "MPU6050.h"
 
 
 
@@ -40,6 +41,8 @@ Encoder ecd_right;
 PID vec_left;
 PID vec_right;
 
+int16_t Ax,Ay,Az,Gx,Gy,Gz;
+
 
 /*---------------------初始化函数---------------------*/
 void myCarControlCodeInit(){
@@ -64,11 +67,14 @@ int main(void) {
     /*模块初始化*/
     OLED_Init();
 	Motor_Init();
+	Delay_ms(1000);
+    MPU6050_Init();
+	Delay_ms(1000);
     Encoder_Init_TIM_All();
     Timer_Init();//定时器初始化
 	Key_Init();
-	Serial_Init();
-	gray_init();
+	//Serial_Init();
+	//gray_init();
 	
     
     
@@ -80,6 +86,9 @@ int main(void) {
 
 
     while (1) {
+		MPU6050_GetData(&Ax,&Ay,&Az,&Gx,&Gy,&Gz);
+
+
 
         Motor_SetSpeedA(vec_left.output);
         Motor_SetSpeedB(vec_right.output);
@@ -142,14 +151,17 @@ int main(void) {
             if (KeyNumMenu==2)//目前测试的进程
             {
 
-               OLED_ShowNum(1, 1, D1, 1);
-               OLED_ShowNum(1, 2, D2, 1);
-               OLED_ShowNum(1, 3, D3, 1);
-               OLED_ShowNum(1, 4, D4, 1);
-               OLED_ShowNum(1, 5, D5, 1);
-               OLED_ShowNum(1, 6, D6, 1);
-               OLED_ShowNum(1, 7, D7, 1);
-               OLED_ShowNum(1, 8, D8, 1);
+//               OLED_ShowNum(1, 1, D1, 1);
+//               OLED_ShowNum(1, 2, D2, 1);
+//               OLED_ShowNum(1, 3, D3, 1);
+//               OLED_ShowNum(1, 4, D4, 1);
+//               OLED_ShowNum(1, 5, D5, 1);
+//               OLED_ShowNum(1, 6, D6, 1);
+//               OLED_ShowNum(1, 7, D7, 1);
+//               OLED_ShowNum(1, 8, D8, 1);
+                OLED_ShowSignedNum(1,1,Gx,5);
+                OLED_ShowSignedNum(2,1,Gy,5);
+                OLED_ShowSignedNum(3,1,Gz,5);
 				//track();
 
             }
@@ -188,6 +200,8 @@ void TIM1_UP_IRQHandler(void)//100ms
     {
         updateEncoderLoopSimpleVersion(&ecd_left, 100, TIM2);
         updateEncoderLoopSimpleVersion(&ecd_right, 100, TIM4);
+
+        
 
         updatePID(&vec_left, ecd_left.counter.count_increment);
         updatePID(&vec_right, ecd_right.counter.count_increment);
