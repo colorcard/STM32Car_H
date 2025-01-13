@@ -93,7 +93,7 @@ void Motor_SetSpeed(int MotorStatus,int16_t Speed)
     }
 }
 
-void motor_target_set(int left,int right)
+void motor_target_set(float left,float right)
 {
     setPIDTarget(&vec_left, left);
 	setPIDTarget(&vec_right, right);

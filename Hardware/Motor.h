@@ -5,6 +5,6 @@ void Motor_Init(void);
 void Motor_SetSpeedA(int16_t Speed);
 void Motor_SetSpeedB(int16_t Speed);
 void Motor_SetSpeed(int MotorStatus,int16_t Speed);
-void motor_target_set(int left,int right);
+void motor_target_set(float left,float right);
 
 #endif

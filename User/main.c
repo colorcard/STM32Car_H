@@ -42,6 +42,35 @@ Encoder ecd_right;
 PID vec_left;
 PID vec_right;
 
+PID YAW;
+
+float index_yaw_target = 0;
+
+void targetYaw(float target){
+    setPIDTarget(&YAW, target);
+    if (target>getYaw()){
+        motor_target_set(0,YAW.output);
+    }
+    else if(target<getYaw()){
+        motor_target_set(YAW.output,0);
+    }
+    else{
+        motor_target_set(0,0);
+    }
+}//目标角度
+
+int angleControl(float index){
+    motor_target_set(0,0);
+    if((int)getYaw() != (int)index){
+        targetYaw(index);
+        return 0;//未到达目标角度
+    }
+    else{
+        motor_target_set(0,0);
+        return 1;//到达目标角度
+    }
+}//角度控制
+
 /*---------------------MPU6050变量定义---------------------*/
 int16_t AX, AY, AZ, GX, GY, GZ;
 uint64_t millis;                        //millis为当前程序运行的时间，类似arduino里millis()函数
@@ -58,35 +87,6 @@ SensorMsg msg = {
         .A = {0.0f, 0.0f, 0.0f},
         .G = {0.0f, 0.0f, 0.0f}
 };
-
-void MPU6050Print() {
-    OLED_ShowSignedNum(2, 1, msg.A[0], 3);					  //OLED显示数据
-    OLED_ShowNum(2, 6, (uint32_t)(msg.A[0] * 100) % 100, 1);
-    OLED_ShowSignedNum(3, 1, msg.A[1], 3);
-    OLED_ShowNum(3, 6, (uint32_t)(msg.A[1] * 100) % 100, 1);
-    OLED_ShowSignedNum(4, 1, msg.A[2], 3);
-    OLED_ShowNum(4, 6, (uint32_t)(msg.A[2] * 100) % 100, 1);
-    OLED_ShowSignedNum(2, 8, msg.G[0], 3);
-    OLED_ShowNum(2, 13, (uint32_t)(msg.G[0] * 100) % 100, 1);
-    OLED_ShowSignedNum(3, 8, msg.G[1], 3);
-    OLED_ShowNum(3, 13, (uint32_t)(msg.G[1] * 100) % 100, 1);
-    OLED_ShowSignedNum(4, 8, msg.G[2], 3);
-    OLED_ShowNum(4, 13, (uint32_t)(msg.G[2] * 100) % 100, 1);
-}
-
-void EularPrint() {
-    OLED_ShowString(2, 1, "Yaw:");
-    OLED_ShowSignedNum(2, 8, getYaw(), 3);
-    OLED_ShowNum(2, 13, (uint32_t)(getYaw() * 100) % 100, 2);
-    OLED_ShowString(3, 1, "Roll:");
-    OLED_ShowSignedNum(3, 8, getRoll(), 3);
-    OLED_ShowNum(3, 13, (uint32_t)(getRoll() * 100) % 100, 2);
-    OLED_ShowString(4, 1, "Pitch:");
-    OLED_ShowSignedNum(4, 8, getPitch(), 3);
-    OLED_ShowNum(4, 13, (uint32_t)(getPitch() * 100) % 100, 2);
-}
-
-
 /*---------------------初始化函数---------------------*/
 void myCarControlCodeInit(){
     Parameter param = {4, 28, 13, 0.065};
@@ -100,10 +100,11 @@ void myCarControlCodeInit(){
     initPID(&vec_right, 2100, 5000);
     setPIDParam(&vec_right, 11, 0.5,0.5);
     setPIDTarget(&vec_right, 0);
+
+    initPID(&YAW, 2100, 5000);
+    setPIDParam(&YAW, 11, 0.5,0.5);
+    setPIDTarget(&YAW, 180);
 }
-
-
-
 /*---------------------主函数---------------------*/
 
 int main(void) {
@@ -211,7 +212,6 @@ int main(void) {
 //               OLED_ShowNum(1, 7, D7, 1);
 //               OLED_ShowNum(1, 8, D8, 1);
 				//track();
-                EularPrint();
                 Serial_Printf("All:%f,%f,%f\n",getYaw(),getRoll(),getPitch());
 
             }
@@ -251,22 +251,18 @@ void TIM1_UP_IRQHandler(void)//100ms
         updateEncoderLoopSimpleVersion(&ecd_left, 100, TIM2);
         updateEncoderLoopSimpleVersion(&ecd_right, 100, TIM4);
 
-        
-
         updatePID(&vec_left, ecd_left.counter.count_increment);
         updatePID(&vec_right, ecd_right.counter.count_increment);
-
+        updatePID(&YAW, getYaw());
 
         TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
     }
 }//速度计时器中断服务函数
 
-void TIM8_UP_IRQHandler(void)
+void TIM8_UP_IRQHandler(void)//1ms
 {
     if (TIM_GetITStatus(TIM8, TIM_IT_Update) != RESET)
     {
-        // 用户任务代码
-        // ...
         millis++;
         // 清除中断标志位
         TIM_ClearITPendingBit(TIM8, TIM_IT_Update);
@@ -313,4 +309,7 @@ void dataGetAndFilter() {
     msg.G[1] -= mpu6050.MPU6050ERROE[4];
     msg.G[2] -= mpu6050.MPU6050ERROE[5];
 }
+
+
+
 
