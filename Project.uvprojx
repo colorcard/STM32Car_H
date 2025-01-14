@@ -751,6 +751,11 @@
               <FilePath>.\Hardware\pid.h</FilePath>
             </File>
             <File>
+              <FileName>gray_track.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\gray_track.c</FilePath>
+            </File>
+            <File>
               <FileName>Serial.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Hardware\Serial.c</FilePath>
@@ -759,11 +764,6 @@
               <FileName>Serial.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Hardware\Serial.h</FilePath>
-            </File>
-            <File>
-              <FileName>gray_track.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Hardware\gray_track.c</FilePath>
             </File>
             <File>
               <FileName>gray_track.h</FileName>

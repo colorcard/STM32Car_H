@@ -42,36 +42,62 @@ Encoder ecd_right;
 PID vec_left;
 PID vec_right;
 
-PID YAW;
-
-float index_yaw_target = 0;
+int flag = 1;
+float index_yaw = 180;
 
 void targetYaw(float target){
-    updatePID(&YAW, getYaw());
-    setPIDTarget(&YAW, target);
-    if (target>getYaw()){
-        motor_target_set(0,YAW.output);
+    float yaw = getYaw();
+    float error_yaw = target - yaw;
+    if(error_yaw>=270)
+        error_yaw = -yaw - (360-target);
+    else if(error_yaw<=-270)
+        error_yaw = target + 360 - yaw;
+    if(error_yaw>1){
+        motor_target_set(40,0);
+    }else if(error_yaw<-1){
+        motor_target_set(0,40);
+    } else {
+        motor_target_set(100, 100);
     }
-    else if(target<getYaw()){
-        motor_target_set(YAW.output,0);
-    }
-    else{
-        motor_target_set(0,0);
-    }
-}//目标角度
+}
 
-int angleControl(float index){
-    motor_target_set(0,0);
-    if((int)getYaw() != (int)index){
-        targetYaw(index);
-        return 0;//未到达目标角度
+float changeYaw(float yaw){
+    float index = getYaw()+yaw;
+    if(index>=360){
+        index-= 360;
+    }else if(index<0){
+        index += 360;
     }
-    else{
-        motor_target_set(0,0);
-        return 1;//到达目标角度
-    }
-}//角度控制
+    return index;
+}
 
+/*---------------------小车运行---------------------*/
+int carFlag = 1;
+double angle = 30;
+
+void runX(void){
+    if(carFlag == 1){
+        targetYaw(180.0 + angle);
+        if(D1 == 0||D2 == 0||D3 == 0||D4 == 0||D5 == 0||D6 == 0||D7 == 0||D8 == 0){
+            carFlag = 2;
+        }
+    }else if(carFlag == 2){
+        track();
+        if(D1&D2&D3&D4&D5&D6&D7&D8){
+            carFlag = 3;
+        }
+    }else if(carFlag == 3) {
+        targetYaw(360 - angle);
+        if (D1 == 0 || D2 == 0 || D3 == 0 || D4 == 0 || D5 == 0 || D6 == 0 || D7 == 0 || D8 == 0) {
+            carFlag = 4;
+        }
+    }else if(carFlag == 4){
+        track();
+        if(D1&D2&D3&D4&D5&D6&D7&D8){
+            carFlag = 1;
+        }
+    }
+}
 /*---------------------MPU6050变量定义---------------------*/
 int16_t AX, AY, AZ, GX, GY, GZ;
 uint64_t millis;                        //millis为当前程序运行的时间，类似arduino里millis()函数
@@ -95,16 +121,13 @@ void myCarControlCodeInit(){
     initEncoder(&ecd_right,param);
     //vec pid init
     initPID(&vec_left, 2100, 5000);
-    setPIDParam(&vec_left, 11, 0.5,0.5);
+    setPIDParam(&vec_left, 7.5, 0.7,0.4);
     setPIDTarget(&vec_left, 0);
 
     initPID(&vec_right, 2100, 5000);
-    setPIDParam(&vec_right, 11, 0.5,0.5);
+    setPIDParam(&vec_right,7.5, 0.7,0.4);
     setPIDTarget(&vec_right, 0);
 
-    initPID(&YAW, 2100, 5000);
-    setPIDParam(&YAW, 11, 0.5,0.5);
-    setPIDTarget(&YAW, 180);
 }
 /*---------------------主函数---------------------*/
 
@@ -121,6 +144,7 @@ int main(void) {
     Timer_Init();//定时器初始化
     TIM8_Init();
 
+	Delay_ms(5000);
     dataGetERROR();
 	Key_Init();
 	Serial_Init();
@@ -136,6 +160,10 @@ int main(void) {
 
 
     while (1) {
+		
+		Motor_SetSpeedA(vec_left.output);
+        Motor_SetSpeedB(vec_right.output);
+        //更新速度
 
         if(millis - mpu6050.preMillis >= mpu6050.MPU6050dt) {
             mpu6050.preMillis = millis;
@@ -144,9 +172,7 @@ int main(void) {
         }//姿态角更新
 
 
-        Motor_SetSpeedA(vec_left.output);
-        Motor_SetSpeedB(vec_right.output);
-        //更新速度
+        
 
         if (LastKeyNumMenu!=KeyNumMenu||LastMenuFlag!=MenuFlag){
             OLED_Clear();
@@ -188,15 +214,14 @@ int main(void) {
             /*  速度操作 */
             if (KeyNumMenu==1)
             {
-				
-				
                 OLED_ShowString(1,1,"Speed");//1 Speed
-                OLED_ShowSignedNum(2,1,Speed,5);//SpeedNum
+
                 OLED_ShowSignedNum(3,1,(int32_t)ecd_left.counter.count_increment,8);//
                 OLED_ShowSignedNum(4,1,(int32_t)ecd_right.counter.count_increment,8);//
 
-                Serial_Printf("Speed:%lld,",ecd_left.counter.count_increment);
-				Serial_Printf("%lld\n",ecd_right.counter.count_increment);
+                track();
+//                Serial_Printf("Speed:%lld,",ecd_left.counter.count_increment);
+//				Serial_Printf("%lld\n",ecd_right.counter.count_increment);
 
             }
 
@@ -207,16 +232,8 @@ int main(void) {
             {
 
                 OLED_ShowNum(1, 1, millis, 7);
-//               OLED_ShowNum(1, 2, D2, 1);
-//               OLED_ShowNum(1, 3, D3, 1);
-//               OLED_ShowNum(1, 4, D4, 1);
-//               OLED_ShowNum(1, 5, D5, 1);
-//               OLED_ShowNum(1, 6, D6, 1);
-//               OLED_ShowNum(1, 7, D7, 1);
-//               OLED_ShowNum(1, 8, D8, 1);
-				//track();
-                Serial_Printf("All:%f,%f,%f\n",getYaw(),getRoll(),getPitch());
-
+                OLED_ShowNum(2, 1, getYaw(), 3);
+                runX();
             }
 
 
@@ -253,6 +270,8 @@ void TIM1_UP_IRQHandler(void)//100ms
     {
         updateEncoderLoopSimpleVersion(&ecd_left, 100, TIM2);
         updateEncoderLoopSimpleVersion(&ecd_right, 100, TIM4);
+		
+
 
         updatePID(&vec_left, ecd_left.counter.count_increment);
         updatePID(&vec_right, ecd_right.counter.count_increment);
@@ -296,9 +315,9 @@ void getMPU6050Data() {
     msg.A[0] = (float)((float)AX / (float)32768) * 16 * 9.8;
     msg.A[1] = (float)((float)AY / (float)32768) * 16 * 9.8;
     msg.A[2] = (float)((float)AZ / (float)32768) * 16 * 9.8;
-    msg.G[0] = (float)((float)GX / (float)32768) * 2000 * 3.5;
-    msg.G[1] = (float)((float)GY / (float)32768) * 2000 * 3.5;
-    msg.G[2] = (float)((float)GZ / (float)32768) * 2000 * 3.5;
+    msg.G[0] = (float)((float)GX / (float)32768) * 2000 * 3.5/1.2444444444;
+    msg.G[1] = (float)((float)GY / (float)32768) * 2000 * 3.5/1.2444444444;
+    msg.G[2] = (float)((float)GZ / (float)32768) * 2000 * 3.5/1.2444444444;
 
 }
 
