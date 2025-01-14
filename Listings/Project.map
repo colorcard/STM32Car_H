@@ -135,7 +135,6 @@ Section Cross References
     motor.o(i.Motor_SetSpeedB) refers to stm32f10x_gpio.o(i.GPIO_ResetBits) for GPIO_ResetBits
     motor.o(i.Motor_SetSpeedB) refers to stm32f10x_gpio.o(i.GPIO_SetBits) for GPIO_SetBits
     motor.o(i.Motor_SetSpeedB) refers to pwm.o(i.PWM_SetCompare1) for PWM_SetCompare1
-    motor.o(i.motor_target_set) refers to fflti.o(.text) for __aeabi_i2f
     motor.o(i.motor_target_set) refers to pid.o(i.setPIDTarget) for setPIDTarget
     motor.o(i.motor_target_set) refers to main.o(.bss) for vec_left
     pwm.o(i.PWM_Init) refers to stm32f10x_rcc.o(i.RCC_APB1PeriphClockCmd) for RCC_APB1PeriphClockCmd
@@ -386,6 +385,7 @@ Section Cross References
     main.o(i.main) refers to oled.o(i.OLED_Clear) for OLED_Clear
     main.o(i.main) refers to key.o(i.Key_GetNum) for Key_GetNum
     main.o(i.main) refers to oled.o(i.OLED_ShowString) for OLED_ShowString
+    main.o(i.main) refers to motor.o(i.motor_target_set) for motor_target_set
     main.o(i.main) refers to oled.o(i.OLED_ShowSignedNum) for OLED_ShowSignedNum
     main.o(i.main) refers to serial.o(i.Serial_Printf) for Serial_Printf
     main.o(i.main) refers to oled.o(i.OLED_ShowNum) for OLED_ShowNum
@@ -1003,7 +1003,6 @@ Removing Unused input sections from the image.
     Removing buzzer.o(i.Buzzer_ON), (20 bytes).
     Removing buzzer.o(i.Buzzer_Turn), (44 bytes).
     Removing motor.o(i.Motor_SetSpeed), (30 bytes).
-    Removing motor.o(i.motor_target_set), (48 bytes).
     Removing encoder.o(i.Get_TIM_Direction), (10 bytes).
     Removing serial.o(i.Serial_Pow), (20 bytes).
     Removing serial.o(i.Serial_SendArray), (26 bytes).
@@ -1011,7 +1010,7 @@ Removing Unused input sections from the image.
     Removing serial.o(i.fputc), (16 bytes).
     Removing gray_track.o(i.digtal), (64 bytes).
     Removing gray_track.o(i.gpio_get), (24 bytes).
-    Removing gray_track.o(i.track), (402 bytes).
+    Removing gray_track.o(i.track), (440 bytes).
     Removing gray_track.o(.constdata), (48 bytes).
     Removing mpu6050.o(i.MPU6050_GetID), (10 bytes).
     Removing madgwickahrs.o(i.getPitchRadians), (28 bytes).
@@ -1020,7 +1019,7 @@ Removing Unused input sections from the image.
     Removing madgwickahrs.o(i.update), (3628 bytes).
     Removing main.o(i.MPU6050Print), (372 bytes).
 
-455 unused section(s) (total 22156 bytes) removed from the image.
+454 unused section(s) (total 22146 bytes) removed from the image.
 
 ==============================================================================
 
@@ -1033,21 +1032,21 @@ Image Symbol Table
     ../clib/microlib/division.c              0x00000000   Number         0  uldiv.o ABSOLUTE
     ../clib/microlib/division.c              0x00000000   Number         0  uidiv.o ABSOLUTE
     ../clib/microlib/errno.c                 0x00000000   Number         0  errno.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9a.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11a.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry5.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8a.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry2.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7b.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8b.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11a.o ABSOLUTE
-    ../clib/microlib/longlong.c              0x00000000   Number         0  llsshr.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry2.o ABSOLUTE
     ../clib/microlib/longlong.c              0x00000000   Number         0  llshl.o ABSOLUTE
+    ../clib/microlib/longlong.c              0x00000000   Number         0  llsshr.o ABSOLUTE
     ../clib/microlib/longlong.c              0x00000000   Number         0  llushr.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printfa.o ABSOLUTE
     ../clib/microlib/stdio/streams.c         0x00000000   Number         0  stdout.o ABSOLUTE
@@ -1056,32 +1055,32 @@ Image Symbol Table
     ../clib/microlib/stubs.s                 0x00000000   Number         0  iusefp.o ABSOLUTE
     ../fplib/microlib/d2f.c                  0x00000000   Number         0  d2f.o ABSOLUTE
     ../fplib/microlib/f2d.c                  0x00000000   Number         0  f2d.o ABSOLUTE
-    ../fplib/microlib/fpadd.c                0x00000000   Number         0  fadd.o ABSOLUTE
     ../fplib/microlib/fpadd.c                0x00000000   Number         0  dadd.o ABSOLUTE
-    ../fplib/microlib/fpdiv.c                0x00000000   Number         0  ddiv.o ABSOLUTE
+    ../fplib/microlib/fpadd.c                0x00000000   Number         0  fadd.o ABSOLUTE
     ../fplib/microlib/fpdiv.c                0x00000000   Number         0  fdiv.o ABSOLUTE
-    ../fplib/microlib/fpepilogue.c           0x00000000   Number         0  fepilogue.o ABSOLUTE
+    ../fplib/microlib/fpdiv.c                0x00000000   Number         0  ddiv.o ABSOLUTE
     ../fplib/microlib/fpepilogue.c           0x00000000   Number         0  depilogue.o ABSOLUTE
-    ../fplib/microlib/fpfix.c                0x00000000   Number         0  ffixui.o ABSOLUTE
+    ../fplib/microlib/fpepilogue.c           0x00000000   Number         0  fepilogue.o ABSOLUTE
     ../fplib/microlib/fpfix.c                0x00000000   Number         0  ffixi.o ABSOLUTE
     ../fplib/microlib/fpfix.c                0x00000000   Number         0  dfixul.o ABSOLUTE
+    ../fplib/microlib/fpfix.c                0x00000000   Number         0  ffixui.o ABSOLUTE
     ../fplib/microlib/fpflt.c                0x00000000   Number         0  dfltl.o ABSOLUTE
-    ../fplib/microlib/fpflt.c                0x00000000   Number         0  dfltui.o ABSOLUTE
     ../fplib/microlib/fpflt.c                0x00000000   Number         0  fflti.o ABSOLUTE
     ../fplib/microlib/fpflt.c                0x00000000   Number         0  ffltui.o ABSOLUTE
     ../fplib/microlib/fpflt.c                0x00000000   Number         0  ffltl.o ABSOLUTE
+    ../fplib/microlib/fpflt.c                0x00000000   Number         0  dfltui.o ABSOLUTE
     ../fplib/microlib/fpmul.c                0x00000000   Number         0  dmul.o ABSOLUTE
     ../fplib/microlib/fpmul.c                0x00000000   Number         0  fmul.o ABSOLUTE
     ../fplib/microlib/fpscalb.c              0x00000000   Number         0  fscalb.o ABSOLUTE
     ../fplib/microlib/fpsqrt.c               0x00000000   Number         0  fsqrt.o ABSOLUTE
     ../mathlib/asinf.c                       0x00000000   Number         0  asinf_x.o ABSOLUTE
     ../mathlib/asinf.c                       0x00000000   Number         0  asinf.o ABSOLUTE
-    ../mathlib/atan2f.c                      0x00000000   Number         0  atan2f.o ABSOLUTE
     ../mathlib/atan2f.c                      0x00000000   Number         0  atan2f_x.o ABSOLUTE
+    ../mathlib/atan2f.c                      0x00000000   Number         0  atan2f.o ABSOLUTE
     ../mathlib/fpclassifyf.c                 0x00000000   Number         0  fpclassifyf.o ABSOLUTE
     ../mathlib/funder.c                      0x00000000   Number         0  funder.o ABSOLUTE
-    ../mathlib/sqrtf.c                       0x00000000   Number         0  sqrtf.o ABSOLUTE
     ../mathlib/sqrtf.c                       0x00000000   Number         0  sqrtf_x.o ABSOLUTE
+    ../mathlib/sqrtf.c                       0x00000000   Number         0  sqrtf.o ABSOLUTE
     Hardware\Buzzer.c                        0x00000000   Number         0  buzzer.o ABSOLUTE
     Hardware\Encoder.c                       0x00000000   Number         0  encoder.o ABSOLUTE
     Hardware\Key.c                           0x00000000   Number         0  key.o ABSOLUTE
@@ -1328,15 +1327,16 @@ Image Symbol Table
     invSqrt                                  0x080038e1   Thumb Code   108  madgwickahrs.o(i.invSqrt)
     i.limit                                  0x08003950   Section        0  pid.o(i.limit)
     i.main                                   0x08003984   Section        0  main.o(i.main)
-    i.myCarControlCodeInit                   0x08003c40   Section        0  main.o(i.myCarControlCodeInit)
-    i.setPIDParam                            0x08003cd0   Section        0  pid.o(i.setPIDParam)
-    i.setPIDTarget                           0x08003cd8   Section        0  pid.o(i.setPIDTarget)
-    i.sqrtf                                  0x08003cdc   Section        0  sqrtf.o(i.sqrtf)
-    i.updateEncoderLoopSimpleVersion         0x08003d08   Section        0  encoder.o(i.updateEncoderLoopSimpleVersion)
-    i.updateIMU                              0x08003ebc   Section        0  madgwickahrs.o(i.updateIMU)
-    i.updatePID                              0x0800449c   Section        0  pid.o(i.updatePID)
-    .constdata                               0x0800450c   Section     1520  oled.o(.constdata)
-    .constdata                               0x08004afc   Section       16  main.o(.constdata)
+    i.motor_target_set                       0x08003c4c   Section        0  motor.o(i.motor_target_set)
+    i.myCarControlCodeInit                   0x08003c6c   Section        0  main.o(i.myCarControlCodeInit)
+    i.setPIDParam                            0x08003cfc   Section        0  pid.o(i.setPIDParam)
+    i.setPIDTarget                           0x08003d04   Section        0  pid.o(i.setPIDTarget)
+    i.sqrtf                                  0x08003d08   Section        0  sqrtf.o(i.sqrtf)
+    i.updateEncoderLoopSimpleVersion         0x08003d34   Section        0  encoder.o(i.updateEncoderLoopSimpleVersion)
+    i.updateIMU                              0x08003ee8   Section        0  madgwickahrs.o(i.updateIMU)
+    i.updatePID                              0x080044c8   Section        0  pid.o(i.updatePID)
+    .constdata                               0x08004538   Section     1520  oled.o(.constdata)
+    .constdata                               0x08004b28   Section       16  main.o(.constdata)
     .data                                    0x20000000   Section       20  stm32f10x_rcc.o(.data)
     APBAHBPrescTable                         0x20000000   Data          16  stm32f10x_rcc.o(.data)
     ADCPrescTable                            0x20000010   Data           4  stm32f10x_rcc.o(.data)
@@ -1608,17 +1608,18 @@ Image Symbol Table
     initEncoder                              0x08003889   Thumb Code    56  encoder.o(i.initEncoder)
     initPID                                  0x080038c1   Thumb Code    30  pid.o(i.initPID)
     limit                                    0x08003951   Thumb Code    52  pid.o(i.limit)
-    main                                     0x08003985   Thumb Code   564  main.o(i.main)
-    myCarControlCodeInit                     0x08003c41   Thumb Code   112  main.o(i.myCarControlCodeInit)
-    setPIDParam                              0x08003cd1   Thumb Code     8  pid.o(i.setPIDParam)
-    setPIDTarget                             0x08003cd9   Thumb Code     4  pid.o(i.setPIDTarget)
-    sqrtf                                    0x08003cdd   Thumb Code    44  sqrtf.o(i.sqrtf)
-    updateEncoderLoopSimpleVersion           0x08003d09   Thumb Code   412  encoder.o(i.updateEncoderLoopSimpleVersion)
-    updateIMU                                0x08003ebd   Thumb Code  1474  madgwickahrs.o(i.updateIMU)
-    updatePID                                0x0800449d   Thumb Code   112  pid.o(i.updatePID)
-    OLED_F8x16                               0x0800450c   Data        1520  oled.o(.constdata)
-    Region$$Table$$Base                      0x08004b0c   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x08004b2c   Number         0  anon$$obj.o(Region$$Table)
+    main                                     0x08003985   Thumb Code   572  main.o(i.main)
+    motor_target_set                         0x08003c4d   Thumb Code    24  motor.o(i.motor_target_set)
+    myCarControlCodeInit                     0x08003c6d   Thumb Code   112  main.o(i.myCarControlCodeInit)
+    setPIDParam                              0x08003cfd   Thumb Code     8  pid.o(i.setPIDParam)
+    setPIDTarget                             0x08003d05   Thumb Code     4  pid.o(i.setPIDTarget)
+    sqrtf                                    0x08003d09   Thumb Code    44  sqrtf.o(i.sqrtf)
+    updateEncoderLoopSimpleVersion           0x08003d35   Thumb Code   412  encoder.o(i.updateEncoderLoopSimpleVersion)
+    updateIMU                                0x08003ee9   Thumb Code  1474  madgwickahrs.o(i.updateIMU)
+    updatePID                                0x080044c9   Thumb Code   112  pid.o(i.updatePID)
+    OLED_F8x16                               0x08004538   Data        1520  oled.o(.constdata)
+    Region$$Table$$Base                      0x08004b38   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x08004b58   Number         0  anon$$obj.o(Region$$Table)
     overflow_count_TIM2                      0x20000014   Data           4  encoder.o(.data)
     overflow_count_TIM4                      0x20000018   Data           4  encoder.o(.data)
     Serial_RxFlag                            0x2000001c   Data           1  serial.o(.data)
@@ -1664,9 +1665,9 @@ Memory Map of the image
 
   Image Entry point : 0x08000131
 
-  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00004bc8, Max: 0x00040000, ABSOLUTE)
+  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00004bf4, Max: 0x00040000, ABSOLUTE)
 
-    Execution Region ER_IROM1 (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x00004b2c, Max: 0x00040000, ABSOLUTE)
+    Execution Region ER_IROM1 (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x00004b58, Max: 0x00040000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -1869,31 +1870,32 @@ Memory Map of the image
     0x080038de   0x080038de   0x00000002   PAD
     0x080038e0   0x080038e0   0x00000070   Code   RO         3802    i.invSqrt           madgwickahrs.o
     0x08003950   0x08003950   0x00000034   Code   RO         3537    i.limit             pid.o
-    0x08003984   0x08003984   0x000002bc   Code   RO         3882    i.main              main.o
-    0x08003c40   0x08003c40   0x00000090   Code   RO         3883    i.myCarControlCodeInit  main.o
-    0x08003cd0   0x08003cd0   0x00000008   Code   RO         3538    i.setPIDParam       pid.o
-    0x08003cd8   0x08003cd8   0x00000004   Code   RO         3539    i.setPIDTarget      pid.o
-    0x08003cdc   0x08003cdc   0x0000002c   Code   RO         4055    i.sqrtf             m_ws.l(sqrtf.o)
-    0x08003d08   0x08003d08   0x000001b4   Code   RO         3457    i.updateEncoderLoopSimpleVersion  encoder.o
-    0x08003ebc   0x08003ebc   0x000005e0   Code   RO         3804    i.updateIMU         madgwickahrs.o
-    0x0800449c   0x0800449c   0x00000070   Code   RO         3540    i.updatePID         pid.o
-    0x0800450c   0x0800450c   0x000005f0   Data   RO         3236    .constdata          oled.o
-    0x08004afc   0x08004afc   0x00000010   Data   RO         3885    .constdata          main.o
-    0x08004b0c   0x08004b0c   0x00000020   Data   RO         4194    Region$$Table       anon$$obj.o
+    0x08003984   0x08003984   0x000002c8   Code   RO         3882    i.main              main.o
+    0x08003c4c   0x08003c4c   0x00000020   Code   RO         3362    i.motor_target_set  motor.o
+    0x08003c6c   0x08003c6c   0x00000090   Code   RO         3883    i.myCarControlCodeInit  main.o
+    0x08003cfc   0x08003cfc   0x00000008   Code   RO         3538    i.setPIDParam       pid.o
+    0x08003d04   0x08003d04   0x00000004   Code   RO         3539    i.setPIDTarget      pid.o
+    0x08003d08   0x08003d08   0x0000002c   Code   RO         4055    i.sqrtf             m_ws.l(sqrtf.o)
+    0x08003d34   0x08003d34   0x000001b4   Code   RO         3457    i.updateEncoderLoopSimpleVersion  encoder.o
+    0x08003ee8   0x08003ee8   0x000005e0   Code   RO         3804    i.updateIMU         madgwickahrs.o
+    0x080044c8   0x080044c8   0x00000070   Code   RO         3540    i.updatePID         pid.o
+    0x08004538   0x08004538   0x000005f0   Data   RO         3236    .constdata          oled.o
+    0x08004b28   0x08004b28   0x00000010   Data   RO         3885    .constdata          main.o
+    0x08004b38   0x08004b38   0x00000020   Data   RO         4194    Region$$Table       anon$$obj.o
 
 
-    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x08004b2c, Size: 0x00000610, Max: 0x0000c000, ABSOLUTE)
+    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x08004b58, Size: 0x00000610, Max: 0x0000c000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x20000000   0x08004b2c   0x00000014   Data   RW         1805    .data               stm32f10x_rcc.o
-    0x20000014   0x08004b40   0x00000008   Data   RW         3458    .data               encoder.o
-    0x2000001c   0x08004b48   0x00000003   Data   RW         3582    .data               serial.o
-    0x2000001f   0x08004b4b   0x00000001   PAD
-    0x20000020   0x08004b4c   0x00000025   Data   RW         3805    .data               madgwickahrs.o
-    0x20000045   0x08004b71   0x00000003   PAD
-    0x20000048   0x08004b74   0x00000050   Data   RW         3886    .data               main.o
-    0x20000098   0x08004bc4   0x00000004   Data   RW         4173    .data               mc_w.l(errno.o)
+    0x20000000   0x08004b58   0x00000014   Data   RW         1805    .data               stm32f10x_rcc.o
+    0x20000014   0x08004b6c   0x00000008   Data   RW         3458    .data               encoder.o
+    0x2000001c   0x08004b74   0x00000003   Data   RW         3582    .data               serial.o
+    0x2000001f   0x08004b77   0x00000001   PAD
+    0x20000020   0x08004b78   0x00000025   Data   RW         3805    .data               madgwickahrs.o
+    0x20000045   0x08004b9d   0x00000003   PAD
+    0x20000048   0x08004ba0   0x00000050   Data   RW         3886    .data               main.o
+    0x20000098   0x08004bf0   0x00000004   Data   RW         4173    .data               mc_w.l(errno.o)
     0x2000009c        -       0x00000064   Zero   RW         3581    .bss                serial.o
     0x20000100        -       0x00000110   Zero   RW         3884    .bss                main.o
     0x20000210        -       0x00000400   Zero   RW            1    STACK               startup_stm32f10x_hd.o
@@ -1912,9 +1914,9 @@ Image component sizes
        188         30          0          0          0       1408   gray_track.o
        248         28          0          0          0        992   key.o
       2036        130          0         37          0       5077   madgwickahrs.o
-      2004        306         16         80        272       6333   main.o
+      2016        310         16         80        272       6341   main.o
        132         22          0          0          0     206031   misc.o
-       208         16          0          0          0       2637   motor.o
+       240         24          0          0          0       3164   motor.o
        336          0          0          0          0       2646   mpu6050.o
        338         18          0          0          0       4626   myi2c.o
        940         38       1520          0          0       7910   oled.o
@@ -1932,7 +1934,7 @@ Image component sizes
        220         10          0          0          0       1053   timer.o
 
     ----------------------------------------------------------------------
-     11696        966       1872        152       1396     381512   Object Totals
+     11740        978       1872        152       1396     382047   Object Totals
          0          0         32          0          0          0   (incl. Generated)
         28          0          0          4          0          0   (incl. Padding)
 
@@ -2009,15 +2011,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     17372       1188       1872        156       1396     376612   Grand Totals
-     17372       1188       1872        156       1396     376612   ELF Image Totals
-     17372       1188       1872        156          0          0   ROM Totals
+     17416       1200       1872        156       1396     377095   Grand Totals
+     17416       1200       1872        156       1396     377095   ELF Image Totals
+     17416       1200       1872        156          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                19244 (  18.79kB)
+    Total RO  Size (Code + RO Data)                19288 (  18.84kB)
     Total RW  Size (RW Data + ZI Data)              1552 (   1.52kB)
-    Total ROM Size (Code + RO Data + RW Data)      19400 (  18.95kB)
+    Total ROM Size (Code + RO Data + RW Data)      19444 (  18.99kB)
 
 ==============================================================================
 

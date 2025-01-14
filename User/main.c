@@ -27,7 +27,7 @@
 
 uint8_t KeyNum;		//定义用于接收按键键码的变量
 uint8_t KeyNumMenu=1;		//定义用于接收按键页码
-uint8_t KeyNumMenuTotal=2;		//定义用于接收按键页码的总和
+uint8_t KeyNumMenuTotal=2;		//！！！！！！定义用于接收按键页码的总和！！！！！
 uint8_t MenuFlag=0;        //定义菜单标志,0为主菜单,1为子菜单
 
 uint8_t LastKeyNumMenu=1;		//定义用于上一次接收按键页码
@@ -47,6 +47,7 @@ PID YAW;
 float index_yaw_target = 0;
 
 void targetYaw(float target){
+    updatePID(&YAW, getYaw());
     setPIDTarget(&YAW, target);
     if (target>getYaw()){
         motor_target_set(0,YAW.output);
@@ -140,10 +141,12 @@ int main(void) {
             mpu6050.preMillis = millis;
             dataGetAndFilter();		                            //获取MPU6050的数据
             updateIMU(msg.G[0], msg.G[1], msg.G[2], msg.A[0], msg.A[1], msg.A[2]);
-        }
+        }//姿态角更新
+
 
         Motor_SetSpeedA(vec_left.output);
         Motor_SetSpeedB(vec_right.output);
+        //更新速度
 
         if (LastKeyNumMenu!=KeyNumMenu||LastMenuFlag!=MenuFlag){
             OLED_Clear();
@@ -253,7 +256,6 @@ void TIM1_UP_IRQHandler(void)//100ms
 
         updatePID(&vec_left, ecd_left.counter.count_increment);
         updatePID(&vec_right, ecd_right.counter.count_increment);
-        updatePID(&YAW, getYaw());
 
         TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
     }
