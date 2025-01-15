@@ -73,7 +73,7 @@ float changeYaw(float yaw){
 
 /*---------------------小车运行---------------------*/
 int carFlag = 1;
-double angle = 30;
+double angle = 38.65980825;
 
 void runX(void){
     if(carFlag == 1){
